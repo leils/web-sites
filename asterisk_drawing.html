@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>*asterisk drawing*</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-wrap: wrap;
+      margin: 0;
+      overflow: hidden;
+      font-size: 10px; /* Adjust the font size for smaller/bigger asterisks */
+      font-family: monospace;
+      background: gray;
+    }
+    .asterisk {
+      display: inline-block;
+      margin: 0;
+      line-height: 1em;
+      transition: color 0.3s;
+      cursor: pointer;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    function createAsterisks() {
+      const body = document.body;
+      const totalRows = Math.floor(window.innerHeight / 6); // Adjust based on the desired height of asterisks
+      const totalColumns = Math.floor(window.innerWidth / 10); // Adjust based on the desired width of asterisks
+
+      for (let row = 0; row < totalRows; row++) {
+        for (let col = 0; col < totalColumns; col++) {
+          const asterisk = document.createElement("div");
+          asterisk.className = "asterisk";
+          asterisk.textContent = ".";
+          body.appendChild(asterisk);
+
+          asterisk.addEventListener("mouseover", function () {
+            this.textContent = "*";
+          });
+
+          asterisk.addEventListener("mouseout", function () {
+	    const self = this;
+            setTimeout(function () {
+              self.textContent = ".";
+            }, 700); // 0.5 seconds delay
+          });
+        }
+
+        const lineBreak = document.createElement("br");
+        body.appendChild(lineBreak);
+      }
+    }
+
+    window.onload = createAsterisks;
+  </script>
+</body>
+</html>
+
