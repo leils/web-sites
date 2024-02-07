@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>*hello*</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-wrap: wrap;
+      margin: 0;
+      overflow: hidden;
+      font-size: 30px; 
+      font-family: monospace;
+      background: gray;
+    }
+    .asterisk {
+      display: inline-block;
+      margin: 0;
+      line-height: 1em;
+      transition: color 0.3s;
+      cursor: pointer;
+      color: gray;
+      user-select: none;
+    }
+    .asterisk:hover {
+        color: black;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    function createHellos() {
+      const body = document.body;
+      const totalRows = Math.floor(window.innerHeight / 3); 
+      const totalColumns = Math.floor(window.innerWidth / 10); 
+
+      for (let row = 0; row < totalRows; row++) {
+        for (let col = 0; col < totalColumns; col++) {
+          const hello = document.createElement("div");
+          hello.className = "asterisk";
+          hello.textContent = "hello";
+          body.appendChild(asterisk);
+
+        }
+
+        const lineBreak = document.createElement("br");
+        body.appendChild(lineBreak);
+      }
+    }
+
+    window.onload = createHellos;
+  </script>
+</body>
+</html>
+
