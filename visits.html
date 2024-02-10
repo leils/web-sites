@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>replit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div>Hello <span id="greeting">there</span>! This is your <span id="counter">1st</span> visit.</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let visitCount = localStorage.getItem("visitCount") ? parseInt(localStorage.getItem("visitCount")) : 0;
+            visitCount++;
+            localStorage.setItem("visitCount", visitCount);
+            const suffix = (visitCount%10 == 1) ? "st" : (visitCount%10 == 2) ? "nd" : (visitCount%10 == 3) ? "rd" : "th";
+            document.getElementById("counter").innerHTML = visitCount + suffix;
+
+            if (visitCount > 30) {
+                document.getElementById("greeting").innerHTML = "friend";
+            } else if (visitCount > 1) {
+                document.getElementById("greeting").innerHTML = "again";
+            }
+        });
+    </script>
+</body>
+
+</html>
