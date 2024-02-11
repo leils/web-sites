@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">Hello, visitor.</div>
+    <script>
+        function getTime() {
+            let lastLeftAt = localStorage.getItem('leftAt');
+            if (lastLeftAt) {
+                dateLeft = new Date(parseInt(lastLeftAt))
+                timeAlone = Math.floor((Date.now() - dateLeft) / 1_000);
+                lastVisitElement.textContent = `You left me. I've been alone for ${timeAlone} seconds`;
+            } else {
+                lastVisitElement.textContent = "Nice to meet you.";
+            }
+            document.body.appendChild(lastVisitElement);
+        }
+
+        const lastVisitElement = document.createElement('p');
+
+        getTime();
+
+
+
+        document.onvisibilitychange = function () {
+            if (document.visibilityState === 'hidden') {
+                localStorage.setItem("leftAt", Date.now());
+            }
+            if (document.visibilityState === "visible") {
+                getTime();
+            }
+        }
+    </script>
+</body>
+
+</html>
