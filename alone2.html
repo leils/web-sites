@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">Hello, visitor.</div>
+    <script>
+        // Conversion adapted from Peter Olson on StackOverflow 
+        //https://stackoverflow.com/questions/70805666/how-to-convert-seconds-to-biggest-significative-time-unit 
+        const units = [
+            [1, " second"],
+            [60, " minute"],
+            [60 * 60, " hour"],
+            [60 * 60 * 24, " day"]
+        ];
+
+        function displayTime(seconds) {
+            let bestUnit = units[0];
+            for (const unit of units) {
+                if (seconds >= unit[0]) {
+                    bestUnit = unit;
+                }
+            }
+            const [divisor, label] = bestUnit;
+            let num = Math.floor(seconds/divisor)
+            let text = num + " " + label;
+            if (num != 1) {
+                text += "s"
+            }
+            return text;
+        }
+
+        function getTime() {
+            let lastLeftAt = localStorage.getItem('leftAt');
+            if (lastLeftAt) {
+                dateLeft = new Date(parseInt(lastLeftAt))
+                secondsAlone = Math.floor((Date.now() - dateLeft) / 1_000);
+                console.log(secondsAlone);
+                lastVisitElement.textContent = `You left me. I've been alone for ${displayTime(secondsAlone)}`;
+            } else {
+                lastVisitElement.textContent = "Nice to meet you.";
+            }
+            document.body.appendChild(lastVisitElement);
+        }
+
+        const lastVisitElement = document.createElement('p');
+
+        getTime();
+
+
+
+        document.onvisibilitychange = function () {
+            if (document.visibilityState === 'hidden') {
+                localStorage.setItem("leftAt", Date.now());
+            }
+            if (document.visibilityState === "visible") {
+                getTime();
+            }
+        }
+    </script>
+</body>
+
+</html>
