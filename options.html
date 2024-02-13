@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Options</title>
+  <style>
+    body {
+        background-color:rgb(85, 84, 89);
+        color:antiquewhite;
+    }
+  </style>
+</head>
+<body>
+  <form id="radioForm">
+    <fieldset>
+      <legend>Select an option:</legend>
+      <label><input type="radio" name="option" value="boy"> boy</label><br>
+      <label><input type="radio" name="option" value="girl"> girl</label>
+    </fieldset>
+  </form>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const radioForm = document.getElementById("radioForm");
+
+      radioForm.addEventListener("change", function(event) {
+        const selectedOption = event.target.value;
+        
+        // If an option is selected
+        if (selectedOption) {
+          const newFieldset = document.createElement("fieldset");
+          const newLegend = document.createElement("legend");
+          newLegend.textContent = "Select an option:";
+          newFieldset.appendChild(newLegend);
+
+          const option1 = document.createElement("label");
+          option1.innerHTML = `<input type="radio" name="option" value="${selectedOption}-boy"> ${selectedOption}-boy<br>`;
+          
+          const option2 = document.createElement("label");
+          option2.innerHTML = `<input type="radio" name="option" value="${selectedOption}-girl"> ${selectedOption}-girl<br>`;
+
+          newFieldset.appendChild(option1);
+          newFieldset.appendChild(option2);
+
+          radioForm.appendChild(newFieldset);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
