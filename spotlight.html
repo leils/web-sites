@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>spotlight</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: bisque;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            margin: -72px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="circle">a</div>
+    </div>
+    <script>
+        const wrapper = document.querySelector("#wrapper");
+        for (let i = 0; i < 10000; i++) {
+            const circle = document.createElement('div');
+            circle.classList.add('circle');
+            circle.innerHTML = 'a';
+            wrapper.appendChild(circle);
+        }
+        const circles = document.getElementsByClassName("circle");
+
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            const hoveredEls = document.elementsFromPoint(mouseX, mouseY);
+
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                if (hoveredEls.includes(circle)) {
+                    circle.style.color = "bisque";
+                } else {
+                    circle.style.color = "black";
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
