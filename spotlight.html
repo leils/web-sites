@@ -61,6 +61,13 @@
                 }
             }
         })
+
+        document.addEventListener('mouseleave', (e) => {
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                circle.style.color = "black";
+            }
+        })
     </script>
 </body>
 
