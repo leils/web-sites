@@ -13,6 +13,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: monospace;
             user-select: none;
         }
 
@@ -45,14 +46,19 @@
     <script>
         const wrapper = document.querySelector("#wrapper");
         const text = "It’s 72 degrees inside and my radiator won’t stop hissing, it’s like hearing the air leak out of a spaceship only instead of threatening my life it threatens the monsters that i might have places too close to its aching ribs. I had a radiator in California too, once. In this apartment I’ve replaced every steam valve except the one in the bathroom, because the valve is too close to the wall and the knob is too old and too decrepit to fully shut off the steam. So my bathroom is akin to a sauna, only without a spa or eucalyptus or the personal choice.";
-        for (let i = 0; i < text.length; i++) {
+        const originalText = "I feel overwhelmed with the ownership of things. That now, all at once, this object is placed in my possession and I am responsible for it, it becomes an extension of me. There is too much, too much in the world already, and to usher more into being without thought or care, without giving it a careful place in your home, seems callous to the materials it is made of. Of course the thing is nice, but I have yet to find a place in the house for that vase, yet to darn the hole in that sock, yet to oil the cutting board and here is another thing that will not get the care it deserves."
+        for (let i = 0; i < originalText.length; i++) {
             const circle = document.createElement('div');
             circle.classList.add('circle');
-            circle.innerHTML = text.charAt(i);
+            let altCharacter = text.charAt(i%text.length);
+            let origCharacter = originalText.charAt(i);
+            circle.innerHTML = origCharacter;
+            circle.dataset.alternate = altCharacter;
+            circle.dataset.original = origCharacter;
             wrapper.appendChild(circle);
         }
-        const circles = document.getElementsByClassName("circle");
 
+        const circles = document.getElementsByClassName("circle");
 
         document.addEventListener('mousemove', (e) => {
             const mouseX = e.clientX;
@@ -63,9 +69,11 @@
             for (let i = 0; i < circles.length; i++) {
                 let circle = circles[i];
                 if (hoveredEls.includes(circle)) {
-                    circle.style.color = "bisque";
+                    circle.innerHTML = circle.dataset.alternate
+                    circle.style.color = "green";
                 } else {
-                    circle.style.color = "black";
+                    circle.innerHTML = circle.dataset.original
+                    circle.style.color = "white";
                 }
             }
         })
@@ -73,7 +81,8 @@
         document.addEventListener('mouseleave', (e) => {
             for (let i = 0; i < circles.length; i++) {
                 let circle = circles[i];
-                circle.style.color = "black";
+                circle.innerHTML = circle.dataset.original
+                circle.style.color = "white";
             }
         })
     </script>
