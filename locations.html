@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>locations</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+            color: bisque;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80vw;    
+        }
+
+        input[type=range] {
+            height: 37px;
+            -webkit-appearance: none;
+            margin: 10px 10px;
+            width: 50%;
+            max-width: 250px;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000;
+            background: #A99D9A;
+            border-radius: 6px;
+            border: 1px solid #000000;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -11px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #A99D9A;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000;
+            background: #A99D9A;
+            border-radius: 6px;
+            border: 1px solid #000000;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: #A99D9A;
+            border: 1px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: #A99D9A;
+            border: 1px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+        }
+
+        input[type=range]::-ms-thumb {
+            margin-top: 1px;
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: #A99D9A;
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: #A99D9A;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <label for="place">San Francisco</label>
+        <input type="range" id="place" name="place" min="0" max="255" />
+        <label for="place">New York</label>
+    </div>
+
+    <script>
+        const value = document.querySelector("#place");
+        value.addEventListener("input", (event) => {
+            let num = event.target.value
+            console.log(num)
+            // document.body.style.color= ["rgb(",255-num,",",0,",",num,")"].join("")
+        });
+
+    </script>
+</body>
+
+</html>
