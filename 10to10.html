@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>today</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+            color: bisque;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80vw;
+        }
+
+        input[type=range] {
+            height: 37px;
+            -webkit-appearance: none;
+            margin: 10px 10px;
+            width: 50%;
+            max-width: 250px;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000;
+            background: #A99D9A;
+            border-radius: 6px;
+            border: 1px solid #000000;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -11px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #A99D9A;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000;
+            background: #A99D9A;
+            border-radius: 6px;
+            border: 1px solid #000000;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            animate: 0.2s;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: #A99D9A;
+            border: 1px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: #A99D9A;
+            border: 1px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+        }
+
+        input[type=range]::-ms-thumb {
+            margin-top: 1px;
+            box-shadow: 0px 0px 0px #000000;
+            border: 1px solid #FFFFFF;
+            height: 30px;
+            width: 26px;
+            border-radius: 5px;
+            background: #FFFFFF;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: #A99D9A;
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: #A99D9A;
+        }
+
+        .bubble {
+            background: transparent;
+            color: white;
+            padding: 4px 12px;
+            position: absolute;
+            border-radius: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            transform: translateY(-50px);
+            font-size: 50px;
+            max-width: 100px;
+            z-index: -100;
+        }
+
+        .bubble::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            /* background: red; */
+            top: -1px;
+            left: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <label for="place">10am</label>
+        <input type="range" id="place" name="place" min="0" max="255" value="0" class="slider" orient="vertical"/>
+        <output class="bubble" id="bubble">🛫</output>
+        <label for="place">10pm</label>
+    </div>
+
+    <script>
+        const r = document.getElementById("place")
+        const b = document.getElementById("bubble")
+        const people = ["SC", "SC, MJ, JML", "JML", "NAW", "NAW, SB, JML, DS, AA, JK, SW, AW, TH"]
+
+        window.onresize = setBubble(r,b);
+
+        r.addEventListener("input", () => {
+            setBubble(r,b);
+        })
+
+        setBubble(r,b);
+
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const newVal = Number(((val - min) * 100) / (max - min));
+            let currentPeopleIndex = Math.floor(newVal/100 * people.length)
+            console.log(currentPeopleIndex)
+            if (currentPeopleIndex == people.length) {
+                currentPeopleIndex = people.length - 1;
+            }
+            let currentPeople = people[currentPeopleIndex]
+            bubble.innerHTML = currentPeople;
+            let windowWidth = window.innerWidth;
+            let leftOffset = Math.floor(windowWidth / 2) - (250/2)
+
+
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal * .2}% + (${leftOffset}px))`;
+        }
+
+    </script>
+</body>
+
+</html>
