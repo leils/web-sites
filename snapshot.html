@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>snapshot</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: monospace;
+      white-space: pre;
+      user-select: none;
+      text-wrap: wrap;
+    }
+        .image-container {
+        position: relative;
+        width: 300px;
+        margin: 50px auto;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="photo"><img class="pic" id = "shot" src="./assets/snapshot_01.jpeg"/></div>
+  <div class="overlay"></div>
+
+  <script>
+    let currentShot = 0;
+    const shots = [
+      "./assets/snapshot_01.jpeg",
+      "./assets/snapshot_02.jpeg",
+      "./assets/snapshot_03.jpeg",
+      "./assets/snapshot_04.jpeg"
+    ];
+    var overlayElement = document.querySelector(".overlay");
+
+    document.addEventListener("click", function() {
+
+      console.log('clicked');
+      overlayElement.style.opacity = "1";
+      overlayElement.style.transition = "opacity 0s";
+      setTimeout(function() {
+        overlayElement.style.transition = "opacity 0.9s";
+        overlayElement.style.opacity = "0";
+      }, 100)
+
+      currentShot = (currentShot+1) % shots.length;
+      var image = document.getElementById('shot');
+      image.setAttribute('src', shots[currentShot]);
+    });
+
+
+  </script>
+</body>
+
+</html>

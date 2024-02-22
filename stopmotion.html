@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stopmotion</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: monospace;
+      white-space: pre;
+      user-select: none;
+      text-wrap: wrap;
+    }
+
+    .image-container {
+      position: relative;
+      width: 300px;
+      margin: 50px auto;
+    }
+
+    img {
+      max-width: 300px;
+      height: auto;
+      display: block;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="photo"><img class="pic" id="shot" src="./assets/stopmotion/0.jpeg" /></div>
+  <div class="overlay"></div>
+
+  <script>
+    let currentShot = 0;
+    const shotLen = 23;
+    const path_prefix = "./assets/stopmotion/";
+    const path_suffix = ".jpeg";
+    var overlayElement = document.querySelector(".overlay");
+
+    function showFrame() {
+      overlayElement.style.opacity = "1";
+      overlayElement.style.transition = "opacity 0s";
+      setTimeout(function () {
+        overlayElement.style.transition = "opacity 0.9s";
+        overlayElement.style.opacity = "0";
+      }, 60)
+
+      currentShot = (currentShot + 1) % shotLen;
+      let path = path_prefix + currentShot + path_suffix;
+      console.log(path)
+      var image = document.getElementById('shot');
+      image.setAttribute('src', path);
+
+      if (currentShot != 22) {
+        setTimeout(showFrame, 600);
+      }
+    }
+
+    document.addEventListener("click", function () {
+      console.log('clicked');
+      showFrame();
+    });
+
+
+  </script>
+</body>
+
+</html>
