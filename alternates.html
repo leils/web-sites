@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>alternate(s)</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            user-select: none;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 80px;
+            border-color: white;
+            border-style: solid; 
+            max-width: 70vw;
+        }
+
+        .circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            margin: -60px -72px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+    </div>
+    <script>
+        const wrapper = document.querySelector("#wrapper");
+        const altText = "It’s 72 degrees inside and my radiator won’t stop hissing, it’s like hearing the air leak out of a spaceship only instead of threatening my life it threatens the monsters that i might have places too close to its aching ribs. I had a radiator in California too, once. In this apartment I’ve replaced every steam valve except the one in the bathroom, because the valve is too close to the wall and the knob is too old and too decrepit to fully shut off the steam. So my bathroom is akin to a sauna, only without a spa or eucalyptus or the personal choice.";
+        const secondaryAltText = "how often do you wander alone? just choose a direction and go, swaddle your head in a scarf to muffle ears from the cold, lead yourself by the feet over the pitted bricks and stubborn crosswalks to find something that shouts less than tourist and more than unwelcome until you can perch unsettled at a table with a fresh espresso and a chalk-powder scone. "
+        const originalText = "I feel overwhelmed with the ownership of things. That now, all at once, this object is placed in my possession and I am responsible for it, it becomes an extension of me. There is too much, too much in the world already, and to usher more into being without thought or care, without giving it a careful place in your home, seems callous to the materials it is made of. Of course the thing is nice, but I have yet to find a place in the house for that vase, yet to darn the hole in that sock, yet to oil the cutting board and here is another thing that will not get the care it deserves."
+        for (let i = 0; i < originalText.length; i++) {
+            const circle = document.createElement('div');
+            circle.classList.add('circle');
+            let altCharacter = altText.charAt(i%altText.length);
+            let secondaryAltCharacter = secondaryAltText.charAt(i%secondaryAltText.length);
+            let origCharacter = originalText.charAt(i);
+            circle.innerHTML = origCharacter;
+            circle.dataset.alternate = altCharacter;
+            circle.dataset.secondAlt = secondaryAltCharacter;
+            circle.dataset.original = origCharacter;
+            wrapper.appendChild(circle);
+        }
+
+        const circles = document.getElementsByClassName("circle");
+        let mode = 0;
+
+        var handleCircles = function (e) {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            const hoveredEls = document.elementsFromPoint(mouseX, mouseY);
+
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                if (hoveredEls.includes(circle)) {
+                    if (mode == 0) {
+                        circle.innerHTML = circle.dataset.alternate
+                        circle.style.color = "green";
+                    } else {
+                        circle.innerHTML = circle.dataset.secondAlt
+                        circle.style.color = "red";
+
+                    }
+                } else {
+                    circle.innerHTML = circle.dataset.original
+                    circle.style.color = "bisque";
+                }
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            mode = Math.abs(mode - 1);
+            handleCircles(e);
+        })
+
+        document.addEventListener('mousemove', handleCircles)
+
+        document.addEventListener('mouseleave', (e) => {
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                circle.innerHTML = circle.dataset.original
+                circle.style.color = "bisque";
+            }
+        })
+    </script>
+</body>
+
+</html>
