@@ -12,7 +12,6 @@
             height: 100vh;
             margin: 0;
             font-family: monospace;
-            white-space: pre;
             user-select: none;
             background-color: bisque;
         }
@@ -20,14 +19,13 @@
         ul {
             max-height: 60vh;
             width: 100%;
-            margin: 10px 0px;
+            margin: 24px 0px;
         }
 
         li {
-            margin: 8px;
-            width: 200px;
-            margin-bottom: 10px;
-            word-wrap: break-word;
+            max-width: 300px;
+            margin-bottom: 20px;
+            line-height: 1.3em;
         }
 
         @media (min-width: 768px) {
@@ -36,13 +34,6 @@
                 /* Set the number of columns */
                 column-gap: 20px;
                 /* Adjust the gap between columns */
-            }
-        }
-
-        /* Additional media query for even wider screens with three columns */
-        @media (min-width: 1200px) {
-            ul {
-                column-count: 3;
             }
         }
 
@@ -61,7 +52,7 @@
     <p>web experiments by <a href="http://leiac.me">Leia S. Chang</a></p>
     <ul>
         <li><a href="./asterisk_drawing.html">*asterisk drawing* 02.03.2024</a></li>
-        <li><a href="./runner.html">the runner 02.04.2024</a> <i> Ascii and you</i></li>
+        <li><a href="./runner.html">the runner 02.04.2024</a> | <i> Ascii and you</i></li>
         <li><a href="./hello.html">hello 02.06.2024</a></li>
         <li><a href="./visit.html">visit 02.09.2024</a></li>
         <li><a href="./alone.html">alone 02.10.2024</a> | <i>time since, lost</i></li>
@@ -72,11 +63,12 @@
         <li><a href="./alternate.html">alternate 02.15.2024</a> | <i>multiversal</i></li>
         <li><a href="./locations.html">locations 02.16.2024</a> | <i>a scale</i></li>
         <li><a href="./airplane.html">airplane 02.17.2024</a> | <i>🛫</i></li>
-        <li><a href="./10to10.html">today 02.18.2024</a></li>
+        <li><a href="./10to10.html">today 02.18.2024</a> | <i>times not accurate</i></li>
         <li><a href="./cost.html">cost 02.19.2024</a> | <i>another scale</i></li>
-        <li><a href="./snapshot.html">snapshot 02.20.2024</a></li>
+        <li><a href="./snapshot.html">snapshot 02.20.2024</a> | <i>polaroid</i></li>
         <li><a href="./stopmotion.html">stopmotion 02.21.2024</a></li>
         <li><a href="./alternates.html">alternate(s) 02.23.2024</a> | <i>more universes within themselves</i></li>
+        <li><a href="./blackout.html">blackout 02.23.2024</a> | <i>click to remove</i></li>
     </ul>
 
 </body>

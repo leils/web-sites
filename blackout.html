@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>alternate</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            user-select: none;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 80px;
+            border-color: white;
+            border-style: solid; 
+            max-width: 70vw;
+        }
+
+        .word {
+            color: bisque;
+        }
+
+        .circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            margin: -60px -72px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+    </div>
+    <script>
+        const wrapper = document.querySelector("#wrapper");
+        const originalText = "I feel overwhelmed with the ownership of things. That now, all at once, this object is placed in my possession and I am responsible for it, it becomes an extension of me. There is too much, too much in the world already, and to usher more into being without thought or care, without giving it a careful place in your home, seems callous to the materials it is made of. Of course the thing is nice, but I have yet to find a place in the house for that vase, yet to darn the hole in that sock, yet to oil the cutting board and here is another thing that will not get the care it deserves."
+        const words = originalText.split(" ");
+
+        for (let i = 0; i < words.length; i++) {
+            const w = document.createElement('span');
+            w.classList.add("word");
+            w.innerHTML = words[i];
+            w.addEventListener('click', () => {
+                w.style.color = "black";
+            })
+            wrapper.appendChild(w);
+        }
+
+    </script>
+</body>
+
+</html>
