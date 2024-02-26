@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>in an alternate reality</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: 10vh;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+
+        .english {
+            color: firebrick;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chinese">張立雅</div>
+    <div class="english">
+        <span id="lname">Chang</span>, <span id="fname">Leia</span> 
+    </div>
+    <script>
+        const fnames = ["Leia","Liya", "Lia", "Leya", "Leeya"];
+        const lnames = ["Chang","Zhang", "Zeng", "Cheong"];
+        let f = 0;
+        let l = 0;
+
+        let fElement = document.getElementById("fname");
+        let lElement = document.getElementById("lname");
+
+        fElement.addEventListener('click', () => {
+            f = (f + 1) % fnames.length;
+            console.log(f);
+            fElement.innerHTML = fnames[f];
+        });
+
+        lElement.addEventListener('click', () => {
+            l = (l + 1) % lnames.length;
+            lElement.innerHTML = lnames[l];
+        })
+    </script>
+</body>
+
+</html>
