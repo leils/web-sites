@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<!-- 
+    This one feels ... lazy. 
+    What does it mean that you have to click the text? 
+    Does it mean anything? 
+    This interaction is very meh. 
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>this is art</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: 8vh;
+            background-color: bisque;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+
+        .fill-in {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">you could have made this</div>
+    <div id="fill-in" class="fill-in">
+    </div>
+    <script>
+        const trigger = document.getElementById('text');
+        const fill = document.getElementById('fill-in');
+
+        trigger.addEventListener('click', () => {
+            const not = document.createElement('span'); 
+            not.innerHTML = "but you didn't";
+            fill.appendChild(not);
+        })
+    </script>
+</body>
+
+</html>
