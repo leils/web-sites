@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<!-- 
+    Doesn't work on safari. 
+    Change always works in unexpected ways. 
+    Change, surprise, misdirection. 
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>change</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: 4vw;
+            background-color: bisque;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">all things change</div>
+    </div>
+    <script>
+        const trigger = document.getElementById('text');
+        const cursors = ['auto', 'help', 'progress', 'cell', 'move', "url('./assets/cursors/oh.png'), auto","url('./assets/cursors/mylove.png'), auto", "url('./assets/cursors/teehee.png'),auto"]
+        let index = 0;
+
+        trigger.addEventListener('click', () => {
+            console.log(index);
+            index = (index + 1) % cursors.length;
+            document.body.style.cursor = cursors[index];
+        })
+    </script>
+</body>
+
+</html>
