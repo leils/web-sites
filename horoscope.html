@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<!-- 
+    Text taken from SFGate Horoscope for March 1, by Christopher Renstrom.
+    https://www.sfgate.com/horoscope/article/horoscope-friday-03-01-24-christopher-renstrom-18682894.php 
+ -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>horoscope</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            user-select: none;
+            color: bisque;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 80px;
+            border-color: white;
+            border-style: solid;
+            max-width: 70vw;
+        }
+
+        .word {
+            color: bisque;
+        }
+
+        .circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            margin: -60px -72px;
+        }
+    </style>
+</head>
+
+<body>
+    <p> Press space to edit. </p>
+    <div id="wrapper">
+    </div>
+    <script>
+        const wrapper = document.querySelector("#wrapper");
+        const originalText = " Last minute developments show that you won't need to make that big sacrifice after all.  Anti-climactic perhaps, but it's still the thought that counts. You would make people a lot happier if you would stop trying to cater to them all.  A few fulfilled promises are better than a batch of half-filled ones. Spending money on something that was never a good idea to begin with won't make it better.  You'd be well advised to cut losses now. Love saves the day today.  Sometimes a relationship just has to go to the brink before things can get sorted out. There's been so much changing of hands lately that you can't remember if you're buying or selling.  It would be a good idea to take a breather today so you can reassess. Someone who walked out on you before walks back in again.  You'd love to say it's too late . . . but you both know full well that it isn't. Someone you believed to be on your side is actively trying to sabotage you.  It's time to stop making excuses and to launch an offensive. There really is life after obsession.  It's refreshing to be drawn to someone because you wantto be and not because you have to be. It's a nice feeling knowing that your home is your sanctuary again.  There's something to be said for getting your house in order. "
+        const words = originalText.split(" ");
+
+        for (let i = 0; i < words.length; i++) {
+            const w = document.createElement('span');
+            w.classList.add("word");
+            w.innerHTML = words[i];
+            wrapper.appendChild(w);
+        }
+
+        const wordElements = document.getElementsByClassName("word");
+
+        function keyHandler(e) {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                // ' ' is standard, 'Spacebar' was used by IE9 and Firefox < 37
+                e.preventDefault();
+                console.log('Space pressed');
+
+                for (const w of wordElements) {
+                    if (Math.random() > .9) {
+                        w.style.color = "black";
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('keydown', keyHandler);
+
+    </script>
+</body>
+
+</html>
