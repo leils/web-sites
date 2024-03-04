@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pop-up test</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: monospace;
+        }
+
+        #centeredText {
+            cursor: pointer;
+        }
+
+        .popup {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="centeredText">sticky note brain</div>
+
+    <script>
+
+        const textList = [
+            "I still need to text them back...",
+            "The doctor's office doesn't open until Monday...",
+            "I need to apply to ...",
+            "I should write up ...",
+            "Still haven't written that email ...", 
+            "When did I book that for?", 
+            "The fridge is empty", 
+            "I need groceries", 
+            "Call the doctor", 
+            "Book flights", 
+            "Respond to ...",
+            "Meet with ...",
+        ]
+        // Function to open popups at random positions
+        function openPopups() {
+            for (let i = 0; i < textList.length; i++) {
+                openPopupAtRandomPosition("thought" + i, 'width=200,height=200', textList[i]);
+                // setTimeout(() => openPopupAtRandomPosition("thought" + i, 'width=200,height=200', textList[i]), i * 100);
+            }
+        }
+
+        // Function to open a popup at a random position
+        function openPopupAtRandomPosition(name, options, thought) {
+            // Calculate random positions
+            var leftPosition = Math.floor(Math.random() * (window.innerWidth - 400));
+            var topPosition = Math.floor(Math.random() * (window.innerHeight - 400));
+
+            // Open popup window with content
+            var popup = window.open('', name, options + ',left=' + leftPosition + ',top=' + topPosition);
+            if (popup) {
+                // Add content to the popup window
+                popup.document.write('<html><head><title>' + name + '</title></head><body><div class="popup">' + thought + '</div></body></html>');
+                popup.document.body.style = "background-color: #ffcc00; display: flex; justify-content: center; align-items: center; margin: 8px; font-family: monospace;";
+                popup.document.close();
+            }
+        }
+
+        // Add a click event listener to the centered text
+        document.getElementById("centeredText").addEventListener("click", function() {
+            // Open popups at random positions when the text is clicked
+            openPopups();
+        });
+    </script>
+</body>
+</html>
