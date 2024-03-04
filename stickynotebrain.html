@@ -58,9 +58,13 @@
 
         // Function to open a popup at a random position
         function openPopupAtRandomPosition(name, options, thought) {
+            // Get the current screen position of the window
+            var screenX = window.screenX || window.screenLeft || 0;
+            var screenY = window.screenY || window.screenTop || 0;
+
             // Calculate random positions
-            var leftPosition = Math.floor(Math.random() * (window.innerWidth - 400));
-            var topPosition = Math.floor(Math.random() * (window.innerHeight - 400));
+            var leftPosition = screenX + Math.floor(Math.random() * (window.innerWidth - 200));
+            var topPosition = screenY + Math.floor(Math.random() * (window.innerHeight - 200));
 
             // Open popup window with content
             var popup = window.open('', name, options + ',left=' + leftPosition + ',top=' + topPosition);
