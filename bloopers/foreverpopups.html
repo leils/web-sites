@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Windows</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #centeredText {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="centeredText">Click me!</div>
+
+    <script>
+        // Array to store pop-up references
+        var popups = [];
+
+        // Function to open a pop-up at a random position with custom styles
+        function openPopupAtRandomPosition(name, options, style) {
+            // Calculate random positions within the allowed space
+            var maxLeftPosition = window.innerWidth - 200;
+            var maxTopPosition = window.innerHeight - 200;
+
+            var leftPosition = Math.floor(Math.random() * maxLeftPosition);
+            var topPosition = Math.floor(Math.random() * maxTopPosition);
+
+            // Open pop-up window with custom content and style
+            var popup = window.open('', name, options + ',left=' + leftPosition + ',top=' + topPosition);
+            if (popup) {
+                // Add content and style to the pop-up window
+                popup.document.write('<html><head><title>' + name + '</title><style>' + style + '</style></head><body><div class="popup">Popup Content</div></body></html>');
+                popup.document.close();
+
+                // Add the pop-up reference to the array
+                popups.push(popup);
+
+                // Attach the onunload event to the pop-up window
+                popup.onunload = function() {
+                    // Remove the closed pop-up from the array
+                    popups = popups.filter(function(item) {
+                        return item !== popup;
+                    });
+
+                    // Open a new pop-up when one is closed
+                    openPopupAtRandomPosition('NewPopup', 'width=200,height=200', 'background-color: #ccffcc; color: #333;');
+                };
+            }
+        }
+
+        // Function to open pop-ups at random positions with time delay and custom styles
+        function openPopups() {
+            // Open each pop-up with a time delay
+            for (var i = 1; i <= 4; i++) {
+                setTimeout(function() {
+                    openPopupAtRandomPosition('Popup' + i, 'width=200,height=200', 'background-color: #ffcc00; color: #333;');
+                }, i * 1000); // Adjust the delay time (in milliseconds) between pop-ups
+            }
+        }
+
+        // Add a click event listener to the centered text
+        document.getElementById("centeredText").addEventListener("click", function() {
+            // Open pop-ups at random positions with time delay and custom styles when the text is clicked
+            openPopups();
+        });
+    </script>
+</body>
+</html>
