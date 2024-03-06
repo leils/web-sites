@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sticky note brain</title>
+    <title>inescapable</title>
     <style>
         body {
             height: 100vh;
@@ -32,27 +32,10 @@
     </style>
 </head>
 <body>
-    <div id="centeredText">Hey, you</div>
+    <div id="centeredText">Focus</div>
+    
 
     <script>
-
-        const textList = [
-            "Hey!",
-            // "Wait, over here",
-            // "No here",
-            // "No, pay attention to me",
-            // "Oh ignore the rest of them, look at me!",
-            // "Please, just a minute ...",
-            // "No, no, just a sec",
-            // "Don't close me, please",
-        ]
-        // Function to open popups at random positions
-        function openPopups() {
-            for (let i = 0; i < textList.length; i++) {
-                setTimeout(() => openPopupAtRandomPosition("thought" + i, 'width=200,height=200', textList[i]), i * 1000);
-            }
-        }
-
         // Function to open a popup at a random position
         function openPopupAtRandomPosition(name, options, thought) {
             // Get the current screen position of the window
@@ -72,17 +55,16 @@
                 popup.document.close();
 
                 popup.onunload = function() {
-                    // Remove the closed pop-up from the array
+                    console.log('popup destroyed');
                     // Open a new pop-up when one is closed
-                    openPopupAtRandomPosition(name, options, thought);
+                    setTimeout(() => openPopupAtRandomPosition(name, options, thought), 1); // setTimeout puts this in another async block, allows us to release the current popup and launch a new one
                 };
             }
         }
 
         // Add a click event listener to the centered text
         document.getElementById("centeredText").addEventListener("click", function() {
-            // Open popups at random positions when the text is clicked
-            openPopups();
+            openPopupAtRandomPosition("thought", 'width=200,height=200', "intrusive thought")
         });
     </script>
 </body>
