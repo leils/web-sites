@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: larger;
+            color: bisque;
+            background-color: orangered;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+
+        .wrapper {
+            max-width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <h1><b>I tried to make something today failed, so you get this instead.</b></h1>
+        <div>I tried to: </div>
+        <ul id="list">
+        </ul>
+    </div>
+    <script>
+
+        let list = document.getElementById('list');
+
+        let tries = [
+            "Make a site where every time you close a pop-up, two new ones appear. (4.6.24)",
+        ]
+
+        for (line of tries) {
+            let el = document.createElement('li');
+            el.innerHTML = line;
+            list.appendChild(el);
+        }
+    </script>
+</body>
+
+</html>
