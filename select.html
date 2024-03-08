@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: larger;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+            background-color: bisque;
+        }
+
+        .wrapper {
+            /* max-width: 500px; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper" id="wrapper"> </div>
+    <script>
+        let rowsNum = 30;
+        let columnNum = 30;
+        let wrapperEl = document.getElementById('wrapper');
+        let matrix = [];
+
+        function swapValues(r, c) {
+            console.log(r + " " + c);
+
+            let neighbors = [
+                [r - 1, c], //above
+                [r + 1, c], //below
+                [r, c - 1], //left
+                [r, c + 1], //right
+            ]
+
+            for (const n of neighbors) {
+                try {
+                    console.log("x = " + n[0] + ", y=" + n[1]);
+                    const el = matrix[n[0]][n[1]];
+                    console.log(el);
+
+                    if (el.checked) {
+                        el.checked = false;
+                    } else {
+                        el.checked = true;
+                        el.value = "on";
+                    }
+                } catch {
+                    console.log('out of bounds');
+                }
+            }
+        }
+
+        for (let r = 0; r < rowsNum; r++) {
+            let row = [];
+            let rowEl = document.createElement('div');
+            rowEl.classList.add('row');
+            for (let c = 0; c < columnNum; c++) {
+
+                const radioInput = document.createElement('input');
+                radioInput.setAttribute('type', 'radio');
+                radioInput.setAttribute('name', name + r + c);
+                radioInput.dataset.row = r;
+                radioInput.dataset.column = c;
+
+                radioInput.addEventListener('change', () => {
+                    swapValues(parseInt(radioInput.dataset.row), parseInt(radioInput.dataset.column));
+                })
+                rowEl.appendChild(radioInput);
+
+                row.push(radioInput);
+            }
+            matrix.push(row);
+            wrapperEl.appendChild(rowEl);
+        }
+        console.log(matrix);
+
+    </script>
+</body>
+
+</html>
