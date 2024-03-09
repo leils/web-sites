@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>ripple</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-size: larger;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+            background-color: bisque;
+        }
+
+        .wrapper {
+            /* max-width: 500px; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper" id="wrapper"> </div>
+    <script>
+        let rowsNum = 30;
+        let columnNum = 30;
+        let wrapperEl = document.getElementById('wrapper');
+        let matrix = [];
+        const onTime = 400;
+        const startTime = [
+            100, 300, 500, 700
+        ];
+
+        function changeElement(r,c,value) {
+            try {
+                const el = matrix[r][c];
+                el.checked = value;
+            } catch { 
+                console.log('failed');
+            }
+        }
+
+        function animateAround(r, c) {
+            const ring1 = [
+                {x: r+1, y: c},
+                {x: r-1, y: c},
+                {x: r, y: c+1},
+                {x: r, y: c-1},
+            ]
+
+            const ring2 = [
+                {x: r+2, y: c},
+                {x: r-2, y: c},
+                {x: r, y: c+2},
+                {x: r, y: c-2},
+                {x: r+1, y: c+1},
+                {x: r+1, y: c-1},
+                {x: r-1, y: c-1},
+                {x: r-1, y: c+1},
+            ]
+
+            const ring3 = [
+                {x: r+2, y: c+1},
+                {x: r+2, y: c-1},
+                {x: r-2, y: c+1},
+                {x: r-2, y: c-1},
+                {x: r-1, y: c-2},
+                {x: r-1, y: c+2},
+                {x: r+1, y: c-2},
+                {x: r+1, y: c+2},
+            ]
+
+            const ring4 = [
+                {x: r+2, y:c+2},
+                {x: r-2, y:c-2},
+                {x: r+2, y:c-2},
+                {x: r-2, y:c+2},
+            ]
+
+            for (const coord of ring1) {
+                setTimeout(() => { changeElement(coord.x, coord.y, true)}, startTime[0]);
+                setTimeout(() => { changeElement(coord.x, coord.y, false)}, startTime[0] + onTime);
+            }
+
+            for (const coord of ring2) {
+                setTimeout(() => { changeElement(coord.x, coord.y, true)}, startTime[1]);
+                setTimeout(() => { changeElement(coord.x, coord.y, false)}, startTime[1] + onTime);
+            }
+
+            for (const coord of ring3) {
+                setTimeout(() => { changeElement(coord.x, coord.y, true)}, startTime[2]);
+                setTimeout(() => { changeElement(coord.x, coord.y, false)}, startTime[2] + onTime);
+            }
+
+            for (const coord of ring4) {
+                setTimeout(() => { changeElement(coord.x, coord.y, true)}, startTime[3]);
+                setTimeout(() => { changeElement(coord.x, coord.y, false)}, startTime[3] + onTime);
+            }
+        }
+
+        for (let r = 0; r < rowsNum; r++) {
+            let row = [];
+            let rowEl = document.createElement('div');
+            rowEl.classList.add('row');
+            for (let c = 0; c < columnNum; c++) {
+
+                const radioInput = document.createElement('input');
+                radioInput.setAttribute('type', 'radio');
+                radioInput.setAttribute('name', name + r + c);
+                radioInput.dataset.row = r;
+                radioInput.dataset.column = c;
+
+                radioInput.addEventListener('change', () => {
+                    animateAround(parseInt(radioInput.dataset.row), parseInt(radioInput.dataset.column));
+                })
+
+                radioInput.addEventListener('change', () => {
+                    setTimeout(() => {
+                        radioInput.checked = false;
+                    }, 1000)
+                })
+                rowEl.appendChild(radioInput);
+
+                row.push(radioInput);
+            }
+            matrix.push(row);
+            wrapperEl.appendChild(rowEl);
+        }
+        console.log(matrix);
+
+    </script>
+</body>
+
+</html>
