@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visit</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+            background-color: black;
+            color: bisque;
+            font-size: x-large;
+        }
+
+        .text {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">Shhh, let me sleep.</div>
+    <script>
+        const text = document.getElementById('text');
+
+        text.addEventListener('click', () => {
+            console.log('clicked');
+            text.style.transition = "opacity 0s";
+            text.style.opacity = "1";
+            setTimeout(() => {
+                text.style.transition = "opacity 2s";
+                text.style.opacity = "0";
+            }, 500);
+        })
+
+    </script>
+</body>
+
+</html>
