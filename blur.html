@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<!-- 
+    (2/14/24)
+    Moonless nights, dark corners, navigating in the void
+ -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>blur</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: gray;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 80px;
+            border-color: white;
+            border-style: solid; 
+            max-width: 70vw;
+        }
+
+        .circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 150px;
+            margin: -60px -72px;
+        }
+
+        .blur {
+            color: transparent;
+            text-shadow: 0 0 10px #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+    </div>
+    <script>
+        const wrapper = document.querySelector("#wrapper");
+        const text = "It’s 72 degrees inside and my radiator won’t stop hissing, it’s like hearing the air leak out of a spaceship only instead of threatening my life it threatens the monsters that i might have places too close to its aching ribs. I had a radiator in California too, once. In this apartment I’ve replaced every steam valve except the one in the bathroom, because the valve is too close to the wall and the knob is too old and too decrepit to fully shut off the steam. So my bathroom is akin to a sauna, only without a spa or eucalyptus or the personal choice.";
+        for (let i = 0; i < text.length; i++) {
+            const circle = document.createElement('div');
+            circle.classList.add('circle');
+            circle.classList.add('blur');
+            circle.innerHTML = text.charAt(i);
+            wrapper.appendChild(circle);
+        }
+        const circles = document.getElementsByClassName("circle");
+
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            const hoveredEls = document.elementsFromPoint(mouseX, mouseY);
+
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                if (hoveredEls.includes(circle)) {
+                    circle.classList.remove('blur');
+                } else {
+                    circle.classList.add('blur');
+                }
+            }
+        })
+
+        document.addEventListener('mouseleave', (e) => {
+            for (let i = 0; i < circles.length; i++) {
+                let circle = circles[i];
+                circle.classList.add('blur');
+            }
+        })
+    </script>
+</body>
+
+</html>

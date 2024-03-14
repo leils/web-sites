@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hydra</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: monospace;
+            background-color: black;
+            color: bisque;
+        }
+
+        #centeredText {
+            cursor: pointer;
+        }
+
+        .popup {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="centeredText">hydra</div>
+    
+
+    <script>
+        // Function to open a popup at a random position
+        let windows = 1;
+        function openPopupAtRandomPosition(name, options, thought) {
+            // Get the current screen position of the window
+            var screenX = window.screenX || window.screenLeft || 0;
+            var screenY = window.screenY || window.screenTop || 0;
+
+            // Calculate random positions
+            var leftPosition = screenX + Math.floor(Math.random() * (window.innerWidth - 200));
+            var topPosition = screenY + Math.floor(Math.random() * (window.innerHeight - 200));
+
+            // Open popup window with content
+            var popup = window.open('', name, options + ',left=' + leftPosition + ',top=' + topPosition);
+            if (popup) {
+                // Add content to the popup window
+                popup.document.write('<html><head><title>' + name + '</title></head><body><div class="popup">' + thought + '</div></body></html>');
+                popup.document.body.style = "background-color: black; display: flex; justify-content: center; align-items: center; margin: 8px; font-family: monospace; color: bisque";
+                popup.document.close();
+
+                popup.onunload = function() {
+                    console.log('popup destroyed');
+                    // Open a new pop-up when one is closed
+                    setTimeout(() => openPopupAtRandomPosition("window" + (windows++), options, thought), 1); // setTimeout puts this in another async block, allows us to release the current popup and launch a new one
+                    setTimeout(() => openPopupAtRandomPosition("window" + (windows++), options, thought), 2); 
+                };
+            }
+        }
+
+        openPopupAtRandomPosition('head', 'width=200,height=200', 'head');
+
+        // Add a click event listener to the centered text
+        document.getElementById("centeredText").addEventListener("click", function() {
+            openPopupAtRandomPosition("thought", 'width=200,height=200', "intrusive thought")
+        });
+    </script>
+</body>
+</html>
