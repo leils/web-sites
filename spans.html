@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>span</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wrapper {
+            background: bisque;
+            color: black;
+            max-width: 400px;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 80px;
+        }
+
+        .word {
+            margin: 0 .2em 0 0;
+            display: inline;
+        }
+
+        .char {
+            position: relative;
+            transition: ease-in 200ms;
+        }
+
+        .char::before {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 80px;
+            margin: -40px -40px;
+        }
+  
+    </style>
+</head>
+
+<body>
+    <div id="wrapper"> </div>
+    <script>
+        const t = "My brain doesn't work right now so this is me figuring out how to style spans. Paul figured this out for me thanks Paul.";
+        const wrapper = document.getElementById('wrapper');
+        const words = t.split(' ');
+
+        const letterEls = [];
+
+        for (word of words) {
+            const wordEl = document.createElement('span');
+            wordEl.classList.add('word');
+            const chars = word.split('');
+            for (c of chars){ 
+                const charEl = document.createElement('span');
+                charEl.innerHTML = c;
+                charEl.classList.add('char');
+                charEl.dataset.lastTouched = Date.now();
+                wordEl.appendChild(charEl);
+                letterEls.push(charEl);
+            }
+            wrapper.appendChild(wordEl);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            const hoveredEls = document.elementsFromPoint(mouseX, mouseY);
+
+            for (el of hoveredEls) {
+                if (el.classList.contains('char')) {
+                    el.dataset.lastTouched = Date.now();
+                }
+            }
+        });
+
+        const loop = () => {
+            const now = Date.now();
+            for (letterEl of letterEls) {
+                if (!letterEl.dataset.lastTouched) {
+                    continue;
+                }
+
+                const x = now - letterEl.dataset.lastTouched;
+                const blurRadius = Math.max(0, 10 * Math.log(x/1000 + 7) - 20 )
+                letterEl.style.filter = `blur(${blurRadius}px)`;
+            }
+
+            requestAnimationFrame(loop);
+        };
+
+        requestAnimationFrame(loop);
+
+
+    </script>
+</body>
+
+</html>
