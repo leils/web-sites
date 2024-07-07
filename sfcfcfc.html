@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+  <title>San Francisco Football Club Fan Club</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #121212;
+    }
+
+    .container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      overflow: auto;
+      background-color: black;
+    }
+    
+    .bungee-regular {
+      font-family: "Bungee", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    p {
+      color: white;
+      position: absolute;
+      left: 0;
+      z-index: 1000;
+      margin: 8px 8px;
+    }
+
+    h1 {
+      color: #FCC202;
+      font-size: 60vh;
+      margin: 0;
+      position: absolute;
+      left: 0;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body id="body">
+  <div class="bungee-regular" id="title">
+    <p>San Francisco City Football Club Fan Club</p>
+  </div>
+  <div class="container bungee-regular" id="container">
+    <h1 id="scrollText">SFCFC</h1>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+    const text = document.getElementById('scrollText');
+    const detectionBuffer = 50;
+    let fontSize = 60;
+
+    addEventListener("wheel", (event) => {
+      const textWidth = text.offsetWidth;
+      const containerWidth = container.offsetWidth;
+
+      if (container.scrollLeft + containerWidth >= textWidth - detectionBuffer) {
+        text.textContent += "FC";
+        fontSize = fontSize > 5 ? fontSize - 1 : 5;
+        let fontStr = fontSize + "vh";
+        text.style.fontSize = fontStr;
+        console.log('added an FC')
+      }
+    });
+  </script>
+</body>
+
+</html>
