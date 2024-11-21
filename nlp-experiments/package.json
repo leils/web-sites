@@ -1,0 +1,17 @@
+{
+  "name": "nlp-experiments",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "compromise": "^14.14.2",
+    "random": "^5.1.1"
+  }
+}

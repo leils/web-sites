@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>snapshot</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: monospace;
+            white-space: pre;
+            user-select: none;
+            text-wrap: wrap;
+        }
+
+        .image-container {
+            position: relative;
+            width: 300px;
+            margin: 50px auto;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="photo"><img class="pic" id="shot" src="./assets/riso-poster.jpeg" /></div>
+        <div>
+            <p>A friend gave me this poster from a workshop that I didn’t attend. I put it away into a flat folder and
+                the next day I found the perfect frame for it: these frame-less frames that are pared down into glass
+                and clips. I bought two frames and packed them carefully into a bag to {accompany, shuttle, ???} home on
+                    the subway. Mid-transit and mid-car and mid-seat-shuffle there was a mid-train-rattle and a man
+                    stumbled and a crack was placed in the bottom-right corner corner of the glass.
+                    <br>
+                    Just as well that the poster itself says “… a process of letting go, embracing imperfection and
+                    being open to experimental results”. </p>
+        </div>
+
+    </div>
+
+    <script>
+    </script>
+</body>
+
+</html>
