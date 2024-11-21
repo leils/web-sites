@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visits</title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            background-color: bisque;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+
+            font-family: monospace;
+            user-select: none;
+            text-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">Hello, visitor.</div>
+    <script>
+        const numVisitsElement = document.createElement('p');
+
+        function addVisit() {
+            let numberVisits = Number(localStorage.getItem('visitsNum'));
+            localStorage.setItem('visitsNum', numberVisits+1);
+            numVisitsElement.textContent = `Number of visits: ${numberVisits}`;
+            console.log(numberVisits);
+            document.body.appendChild(numVisitsElement);
+        }
+
+        addVisit();
+
+        document.onvisibilitychange = function () {
+            if (document.visibilityState === "visible") {
+                addVisit();
+            }
+        }
+    </script>
+</body>
+
+</html>
