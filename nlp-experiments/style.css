@@ -11,3 +11,7 @@ button {
     cursor: pointer;
 }
 
+p {
+    white-space: pre-wrap;
+}
+

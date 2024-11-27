@@ -1,45 +1,6 @@
 import nlp from 'compromise';
 import random from 'random';
 
-// // Function to categorize words into parts of speech
-// function categorizePartsOfSpeech(text) {
-//     // Parse the text with compromise
-//     const doc = nlp(text);
-
-//     // Extract words and their parts of speech
-//     const words = doc.json().map(line => line.terms.map(token => ({
-//         word: token.text, 
-//         partOfSpeech: token.tags}))).flat()
-
-//     // Categorize words based on parts of speech
-//     const categorized = {
-//         nouns: [],
-//         verbs: [],
-//         adjectives: [],
-//         adverbs: [],
-//         others: []
-//     };
-
-//     words.forEach(({ word, partOfSpeech }) => {
-//         if (partOfSpeech.includes('Noun')) {
-//             categorized.nouns.push(word);
-//         } else if (partOfSpeech.includes('Verb')) {
-//             categorized.verbs.push(word);
-//         } else if (partOfSpeech.includes('Adjective')) {
-//             categorized.adjectives.push(word);
-//         } else if (partOfSpeech.includes('Adverb')) {
-//             categorized.adverbs.push(word);
-//         } else {
-//             categorized.others.push(word);
-//         }
-//     });
-
-//     return categorized;
-// }
-
-// [ { name: 'a', num: 2 }, { name: 'b', num: 3 }, { name: 'c', num: 4 } ] 
-
-
 function randomlyRegenerateText(text) {
     const doc = nlp(text);
 
@@ -49,14 +10,20 @@ function randomlyRegenerateText(text) {
     }))).flat();
 
     const nouns = words.filter((w) => w.partOfSpeech.includes('Noun'));
-    console.log(nouns);
+    const nounsList = nouns.map(n => n.word).sort((a, b) => 0.5 - Math.random());
 
-    const nounString = nouns.map(n => n.word).join(', ');
+    for (const line of doc.json()) {
+        for (const token of line.terms) {
+            if (token.tags.includes("Noun")) {
+                doc.swap(token.text, nounsList[Math.floor(Math.random()*nounsList.length)])
+            }
+        }
+    }
 
-    const nounsElement = document.createElement('p');
-    nounsElement.textContent = nounString;
-
-    document.body.appendChild(nounsElement);
+    const poemElement = document.getElementById("poem");
+    poemElement.setAttribute('style', 'white-space: pre;');
+    poemElement.textContent = doc.text();
+    document.body.appendChild(poemElement);
 }
 
 // Example usage
@@ -68,6 +35,21 @@ surrounded by your pulse
 and then you loosen your grip 
 and there is only ash on your fingers`;
 
+const renderText = `catch a moth in your hand\r\n
+there is a moment\r\n
+where that moth may be alive \r\n
+trapped, in the dark \r\n
+surrounded by your pulse \r\n
+and then you loosen your grip\r\n 
+and there is only ash on your fingers`;
+
+document.onload = function() {
+    console.log('hello~!')
+    const poemElement = document.getElementById("poem");
+    poemElement.setAttribute('style', 'white-space: pre;');
+    poemElement.textContent = renderText;
+    document.body.appendChild(poemElement);
+}
 
 document.onvisibilitychange = function() {
     if (document.visibilityState === 'visible') {
