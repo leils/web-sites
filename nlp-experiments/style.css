@@ -2,11 +2,16 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 50px;
+    background-color: bisque;
 }
 
 button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+}
+
+p {
+    white-space: pre-wrap;
 }
 
