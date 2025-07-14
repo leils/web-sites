@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Radial Tidy Tree of HTML Elements</title>
+  <style>
+    body            { font-family: system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
+    h1              { margin: 1rem 0 0.25rem; }
+    #chart          { width: 960px; height: 960px; }
+    .link           { fill: none; stroke: #bbb; stroke-width: 1.2px; }
+    .node circle    { r: 4px; fill: #fff; stroke: steelblue; stroke-width: 1.5px; }
+    .node text      { font-size: 12px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+    .node.leaf text { fill: #0066cc; cursor: pointer; pointer-events: all; }
+    .node.leaf circle:hover { fill: #cce5ff; }
+  </style>
+</head>
+<body>
+  <h1>HTML Element Types – Radial Tree</h1>
+  <svg id="chart"></svg>
+
+  <!-- D3 v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    /* ---------- 1. Data ---------- */
+    const data = {
+      name: "HTML Elements",
+      children: [
+        {
+          name: "Metadata",
+          children: [
+            { name: "title", url: "https://developer.mozilla.org/docs/Web/HTML/Element/title" },
+            { name: "meta",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/meta" },
+            { name: "link",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/link" }
+          ]
+        },
+        {
+          name: "Sectioning",
+          children: [
+            { name: "header", url: "https://developer.mozilla.org/docs/Web/HTML/Element/header" },
+            { name: "nav",    url: "https://developer.mozilla.org/docs/Web/HTML/Element/nav" },
+            { name: "main",   url: "https://developer.mozilla.org/docs/Web/HTML/Element/main" },
+            { name: "article",url: "https://developer.mozilla.org/docs/Web/HTML/Element/article" },
+            { name: "footer", url: "https://developer.mozilla.org/docs/Web/HTML/Element/footer" }
+          ]
+        },
+        {
+          name: "Text Content",
+          children: [
+            { name: "p",   url: "https://developer.mozilla.org/docs/Web/HTML/Element/p" },
+            { name: "h1",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/Heading_Elements" },
+            { name: "ul",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/ul" },
+            { name: "li",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/li" },
+            { name: "blockquote", url: "https://developer.mozilla.org/docs/Web/HTML/Element/blockquote" }
+          ]
+        },
+        {
+          name: "Media & Embed",
+          children: [
+            { name: "img", url: "https://developer.mozilla.org/docs/Web/HTML/Element/img" },
+            { name: "audio", url: "https://developer.mozilla.org/docs/Web/HTML/Element/audio" },
+            { name: "video", url: "https://developer.mozilla.org/docs/Web/HTML/Element/video" },
+            { name: "iframe", url: "https://developer.mozilla.org/docs/Web/HTML/Element/iframe" }
+          ]
+        },
+        {
+          name: "Forms",
+          children: [
+            { name: "form",  url: "https://developer.mozilla.org/docs/Web/HTML/Element/form" },
+            { name: "input", url: "https://developer.mozilla.org/docs/Web/HTML/Element/input" },
+            { name: "button",url: "https://developer.mozilla.org/docs/Web/HTML/Element/button" },
+            { name: "label", url: "https://developer.mozilla.org/docs/Web/HTML/Element/label" },
+            { name: "select",url: "https://developer.mozilla.org/docs/Web/HTML/Element/select" }
+          ]
+        }
+      ]
+    };
+
+    /* ---------- 2. Layout ---------- */
+    const diameter = 960;
+    const radius   = diameter / 2;
+    const tree     = d3.cluster()
+                       .size([2 * Math.PI, radius - 120]);            // angle range, radius
+
+    const root = d3.hierarchy(data);
+    tree(root);                                                       // mutates root with x (angle) & y (radius)
+
+    /* ---------- 3. Drawing ---------- */
+    const svg = d3.select("#chart")
+                  .attr("viewBox", [-radius, -radius, diameter, diameter]);
+
+    // links
+    svg.append("g")
+       .selectAll("path")
+       .data(root.links())
+       .join("path")
+       .attr("class", "link")
+       .attr("d", d => `
+          M${project(d.target.x, d.target.y)}
+          C${project(d.target.x, (d.target.y + d.source.y) / 2)}
+           ${project(d.source.x, (d.target.y + d.source.y) / 2)}
+           ${project(d.source.x, d.source.y)}
+       `);
+
+    // nodes
+    const node = svg.append("g")
+                    .selectAll("g")
+                    .data(root.descendants())
+                    .join("g")
+                    .attr("class", d => "node" + (d.children ? "" : " leaf"))
+                    .attr("transform", d => `translate(${project(d.x, d.y)})`);
+
+    node.append("circle");
+
+    node.append("text")
+        .attr("dy", "0.32em")
+        .attr("x", d => d.x >= Math.PI ? -10 : 10)
+        .attr("text-anchor", d => d.x >= Math.PI ? "end" : "start")
+        .attr("transform", d => `rotate(${(d.x * 180/Math.PI - 90)})`)
+        .text(d => d.data.name)
+        .on("click", (event, d) => {
+          if (!d.children && d.data.url) window.open(d.data.url, "_blank");
+        });
+
+    /* ---------- 4. Helpers ---------- */
+    // Convert polar to Cartesian
+    function project(angle, radius) {
+      return [
+        Math.cos(angle - Math.PI / 2) * radius,
+        Math.sin(angle - Math.PI / 2) * radius
+      ];
+    }
+  </script>
+</body>
+</html>
+

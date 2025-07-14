@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Radial Tree – Projects & Attributes</title>
+  <style>
+    body   { font-family: system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
+    h1     { margin: 1rem 0 0.25rem; }
+    #chart { width: 960px; height: 960px; }
+
+    .link { fill: none; stroke: #333; stroke-width: 2.2px; }
+    .project-link { fill: none; stroke: tomato; stroke-width: 1px; stroke-dasharray: 3 2; opacity: 0.4; }
+    .project-link.highlight { stroke: #ff7b00; stroke-width: 2.5px; stroke-dasharray: 0; opacity: 1; }
+
+    .node circle { r: 4px; fill: #fff; stroke: steelblue; stroke-width: 2.5px; }
+    .node.project circle { fill: tomato; stroke: darkred; }
+    .node.highlight circle { stroke: #ff7b00; stroke-width: 2.5px; }
+    .node text {
+      font-size: 12px;
+      dominant-baseline: central;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+    }
+    .node.leaf text { fill: #0066cc; cursor: pointer; pointer-events: all; }
+    .node.project text { fill: tomato; font-weight: 600; pointer-events: all; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Web Material — Attribute Hierarchy & Project Links</h1>
+  <svg id="chart"></svg>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const data = {
+      name: "Web Material",
+      children: [
+        { 
+          name: "Text", 
+          children: [ 
+            { name: "Characters" }, { name: "Ascii" }
+          ]
+        }, { 
+          name: "HTML Elements", 
+          children: [ 
+            { name: "Pop-ups" },
+            { name: "Selects" }
+          ]
+        }, { 
+          name: "Interactions",
+          children: [
+            { name: "Hover" },
+            { name: "Click" },
+            { name: "Highlight" },
+            { name: "Mouse Movement" }
+          ]
+        }
+        // { name: "Text", children: [ { name: "Typography" }, { name: "Readability" } ] },
+        // { name: "Interactions", children: [ { name: "Hover" }, { name: "Click" }, { name: "Focus" } ] },
+        // { name: "Layout", children: [ { name: "Grid" }, { name: "Spacing" } ] }
+      ]
+    };
+
+    const projects = [
+      { name: "Asterisk Drawing", attributes: ["Characters", "Mouse Movement"]},
+      { name: "Spotlight", attributes: ["Characters", "Mouse Movement"]},
+      { name: "Runner", attributes: ["Ascii", "Click"]},
+      { name: "Hello", attributes: ["Text", "Mouse Movement"]},
+      { name: "Flashlight", attributes: ["Text", "Mouse Movement"]},
+      { name: "Stickey Note Brain", attributes: ["Pop-ups"]},
+      { name: "Attention", attributes: ["Pop-ups"]},
+      { name: "Attention Required", attributes: ["Pop-ups"]},
+      { name: "Options", attributes: ["Selects"]},
+      { name: "Select", attributes: ["Selects", "Click"]},
+      { name: "Firework", attributes: ["Selects", "Click"]},
+      { name: "Ripple", attributes: ["Selects", "Click"]},
+    ];
+
+    const diameter = 960,
+          radius   = diameter / 2;
+
+    const svg = d3.select("#chart").attr("viewBox", [-radius, -radius, diameter, diameter]);
+    const tree = d3.cluster().size([2 * Math.PI, radius - 160]);
+    const root = tree(d3.hierarchy(data));
+    const nodeByName = new Map(root.descendants().map(d => [d.data.name, d]));
+
+    const attributeAngles = {};
+    root.descendants().forEach(d => {
+      if (!d.children) {
+        attributeAngles[d.data.name] = d.x;
+      }
+    });
+
+    const sortedProjects = projects.slice().sort((a, b) => {
+      const avgAngle = proj => proj.attributes.reduce((sum, attr) => sum + (attributeAngles[attr] || 0), 0) / proj.attributes.length;
+      return avgAngle(a) - avgAngle(b);
+    });
+
+    const angleSpread = 0.7 * 2 * Math.PI; // compress to 70% of circle
+    const startAngle = (2 * Math.PI - angleSpread) / 2;
+
+    const projectRadius = radius - 40;
+    const projectNodes = sortedProjects.map((proj, i, all) => {
+      const angle = startAngle + (i / (all.length - 1)) * angleSpread;
+      return {
+        ...proj,
+        angle,
+        r: projectRadius,
+        x: Math.cos(angle - Math.PI / 2) * projectRadius,
+        y: Math.sin(angle - Math.PI / 2) * projectRadius
+      };
+    });
+
+    svg.append("g")
+      .attr("class", "links")
+      .selectAll("path")
+      .data(root.links())
+      .join("path")
+      .attr("class", "link")
+      .attr("d", d => {
+        const [sx, sy] = polarToCartesian(d.source.x, d.source.y);
+        const [tx, ty] = polarToCartesian(d.target.x, d.target.y);
+        return `M${sx},${sy}C${sx},${sy + (ty - sy) / 2} ${tx},${ty - (ty - sy) / 2} ${tx},${ty}`;
+      });
+
+    const attrNodesSel = svg.append("g")
+      .attr("class", "nodes attributes")
+      .selectAll("g")
+      .data(root.descendants())
+      .join("g")
+      .attr("class", d => "node" + (d.children ? "" : " leaf"))
+      .attr("transform", d => `translate(${polarToCartesian(d.x, d.y)})`)
+      .on("mouseover", attributeHover)
+      .on("mouseout", clearHighlights);
+
+    attrNodesSel.append("circle");
+    attrNodesSel.append("text")
+      .attr("x", d => d.x < Math.PI ? 8 : -8)
+      .attr("text-anchor", d => d.x < Math.PI ? "start" : "end")
+      .attr("transform", d => `rotate(${(d.x * 180 / Math.PI - 90 + (d.x > Math.PI ? 180 : 0))})`)
+      .text(d => d.data.name);
+
+    const projNodesSel = svg.append("g")
+      .attr("class", "nodes projects")
+      .selectAll("g")
+      .data(projectNodes)
+      .join("g")
+      .attr("class", "node project")
+      .attr("transform", d => `translate(${d.x},${d.y})`)
+      .on("mouseover", projectHover)
+      .on("mouseout", clearHighlights);
+
+    projNodesSel.append("circle");
+    projNodesSel.append("text")
+      .attr("x", d => d.angle > Math.PI / 2 && d.angle < 1.5 * Math.PI ? -6 : 6)
+      .attr("text-anchor", d => d.angle > Math.PI / 2 && d.angle < 1.5 * Math.PI ? "end" : "start")
+      .text(d => d.name)
+      .on("mouseover", projectHover)
+      .on("mouseout", clearHighlights);
+
+    const projLinksData = projectNodes.flatMap(p =>
+      p.attributes.map(attr => ({ source: p, target: nodeByName.get(attr) }))
+    );
+
+    const projLinksSel = svg.append("g")
+      .attr("class", "project-links")
+      .selectAll("path")
+      .data(projLinksData)
+      .join("path")
+      .attr("class", "project-link")
+      .attr("d", d => {
+        const [tx, ty] = polarToCartesian(d.target.x, d.target.y);
+        return `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + ty) / 2} ${tx},${(d.source.y + ty) / 2} ${tx},${ty}`;
+      });
+
+    function projectHover(event, proj) {
+      clearHighlights();
+      d3.select(this).classed("highlight", true);
+      proj.attributes.forEach(attr => {
+        attrNodesSel.filter(d => d.data.name === attr).classed("highlight", true);
+        projLinksSel.filter(l => l.source === proj && l.target.data.name === attr)
+          .classed("highlight", true);
+      });
+    }
+
+    function attributeHover(event, attrNode) {
+      clearHighlights();
+      d3.select(this).classed("highlight", true);
+      projLinksSel.filter(l => l.target === attrNode).classed("highlight", true);
+      projNodesSel.filter(p => p.attributes && p.attributes.includes(attrNode.data.name))
+        .classed("highlight", true);
+    }
+
+    function clearHighlights() {
+      svg.selectAll(".highlight").classed("highlight", false);
+    }
+
+    function polarToCartesian(angle, r) {
+      return [Math.cos(angle - Math.PI / 2) * r, Math.sin(angle - Math.PI / 2) * r];
+    }
+  </script>
+</body>
+</html>

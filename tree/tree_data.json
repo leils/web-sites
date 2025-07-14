@@ -1,0 +1,108 @@
+{
+  "name": "Web Material",
+  "children": [
+    {
+      "name": "HTML Elements",
+      "children": [
+        {
+          "name": "Metadata",
+          "children": [
+            { "name": "title", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/title" },
+            { "name": "meta", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/meta" },
+            { "name": "link", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/link" }
+          ]
+        },
+        {
+          "name": "Sectioning",
+          "children": [
+            { "name": "header", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/header" },
+            { "name": "nav", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/nav" },
+            { "name": "main", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/main" },
+            { "name": "article", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/article" },
+            { "name": "footer", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/footer" }
+          ]
+        },
+        {
+          "name": "Text Content",
+          "children": [
+            { "name": "p", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/p" },
+            { "name": "h1", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/Heading_Elements" },
+            { "name": "ul", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/ul" },
+            { "name": "li", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/li" },
+            { "name": "blockquote", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/blockquote" }
+          ]
+        },
+        {
+          "name": "Media & Embed",
+          "children": [
+            { "name": "img", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/img" },
+            { "name": "audio", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/audio" },
+            { "name": "video", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/video" },
+            { "name": "iframe", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/iframe" }
+          ]
+        },
+        {
+          "name": "Forms",
+          "children": [
+            { "name": "form", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/form" },
+            { "name": "input", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/input" },
+            { "name": "button", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/button" },
+            { "name": "label", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/label" },
+            { "name": "select", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/select" }
+          ]
+        },
+        {
+          "name": "Interactive",
+          "children": [
+            { "name": "details", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/details" },
+            { "name": "summary", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/summary" },
+            { "name": "dialog", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/dialog" },
+            { "name": "menu", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/menu" },
+            { "name": "command", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/command" }
+          ]
+        },
+        {
+          "name": "Table Content",
+          "children": [
+            { "name": "table", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/table" },
+            { "name": "thead", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/thead" },
+            { "name": "tbody", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/tbody" },
+            { "name": "tr", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/tr" },
+            { "name": "td", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/td" },
+            { "name": "th", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/th" },
+            { "name": "caption", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/caption" },
+            { "name": "col", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/col" },
+            { "name": "colgroup", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/colgroup" }
+          ]
+        },
+        {
+          "name": "Scripting",
+          "children": [
+            { "name": "script", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/script" },
+            { "name": "noscript", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/noscript" },
+            { "name": "canvas", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/canvas" }
+          ]
+        },
+        {
+          "name": "Demarcation",
+          "children": [
+            { "name": "hr", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/hr" },
+            { "name": "br", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/br" },
+            { "name": "wbr", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/wbr" }
+          ]
+        },
+        {
+          "name": "Inline Semantics",
+          "children": [
+            { "name": "strong", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/strong" },
+            { "name": "em", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/em" },
+            { "name": "small", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/small" },
+            { "name": "mark", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/mark" },
+            { "name": "abbr", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/abbr" },
+            { "name": "cite", "url": "https://developer.mozilla.org/docs/Web/HTML/Element/cite" }
+          ]
+        }
+      ]
+    }
+  ]
+}

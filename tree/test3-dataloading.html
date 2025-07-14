@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Radial ⬌ Cartesian Tidy Tree – Web Material</title>
+  <style>
+    body      { font-family: system-ui, monospace; margin: 0; display: flex; flex-direction: column; align-items: center; }
+    h1        { margin: 1rem 0 0.25rem; }
+    #chart    { width: 960px; height: 960px; }
+    button    { margin: 0.5rem; padding: 0.45rem 0.9rem; font-size: 1rem; cursor: pointer; }
+
+    /* links */
+    .link            { fill: none; stroke: #bbb; stroke-width: 1.2px; }
+    .link.highlight  { stroke: darkorange; stroke-width: 2.5px; }
+
+    /* nodes */
+    .node circle             { r: 4px; fill: #fff; stroke: steelblue; stroke-width: 1.5px; }
+    .node.highlight circle   { stroke: darkorange; stroke-width: 2.5px; }
+
+    /* labels */
+    .node text {
+      font-size: 12px;
+      dominant-baseline: central;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+    }
+    .node.leaf text          { fill: #0066cc; cursor: pointer; pointer-events: all; }
+    .node.leaf:hover circle  { fill: #cce5ff; }
+  </style>
+</head>
+<body>
+  <h1>Web Material &mdash; HTML Element Family Tree</h1>
+  <button id="toggleView">Switch to Cartesian View</button>
+  <svg id="chart"></svg>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    let data;
+    fetch("tree-data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        updateTree();
+      });
+
+    const diameter = 960,
+          radius   = diameter / 2;
+
+    const svg = d3.select("#chart")
+      .attr("viewBox", [-radius, -radius, diameter, diameter])
+      .style("font", "10px sans-serif");
+
+    const linkHorizontal = d3.linkHorizontal()
+      .x(d => d.y - radius)
+      .y(d => d.x - radius);
+
+    const project = (angle, r) => [
+      Math.cos(angle - Math.PI / 2) * r,
+      Math.sin(angle - Math.PI / 2) * r
+    ];
+
+    let radial = false;
+    document.getElementById("toggleView").addEventListener("click", () => {
+      radial = !radial;
+      document.getElementById("toggleView").textContent = radial ? "Switch to Cartesian View" : "Switch to Radial View";
+      updateTree();
+    });
+
+    function updateTree() {
+      if (!data) return;
+      svg.selectAll(".nodes, .links").remove();
+
+      const layout = radial
+        ? d3.cluster().size([2 * Math.PI, radius - 120])
+        : d3.tree().size([radius * 1.8, diameter - 200]);
+
+      const root = d3.hierarchy(data);
+      layout(root);
+
+      /* Links */
+      svg.append("g").attr("class", "links")
+        .selectAll("path")
+        .data(root.links())
+        .join("path")
+        .attr("class", "link")
+        .attr("d", d => radial
+          ? `M${project(d.target.x, d.target.y)}C${project(d.target.x, (d.target.y + d.source.y) / 2)} ${project(d.source.x, (d.target.y + d.source.y) / 2)} ${project(d.source.x, d.source.y)}`
+          : linkHorizontal({ source: d.source, target: d.target })
+        );
+
+      /* Nodes */
+      const node = svg.append("g").attr("class", "nodes")
+        .selectAll("g")
+        .data(root.descendants())
+        .join("g")
+        .attr("class", d => "node" + (d.children ? "" : " leaf"))
+        .attr("transform", d => radial
+          ? `translate(${project(d.x, d.y)})`
+          : `translate(${d.y - radius},${d.x - radius})`)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);
+
+    
+      /* Node circles */
+      node.append("circle");
+
+      /* Labels */
+      node.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => radial ? (d.x < Math.PI ? 10 : -10) : 8)
+        .attr("text-anchor", d => radial ? (d.x < Math.PI ? "start" : "end") : "start")
+        .attr("transform", d => radial ? `rotate(${(d.x * 180 / Math.PI - 90 + (d.x > Math.PI ? 180 : 0))})` : null)
+        .text(d => d.data.name)
+        .on("click", (event, d) => {
+          if (!d.children && d.data.url) window.open(d.data.url, "_blank");
+        });
+    }
+
+    function handleMouseOver(event, d) {
+      const pathNodes = new Set();
+      let cur = d;
+      while (cur) { pathNodes.add(cur); cur = cur.parent; }
+      svg.selectAll(".node").classed("highlight", n => pathNodes.has(n));
+      svg.selectAll(".link").classed("highlight", l => pathNodes.has(l.target));
+    }
+
+    function handleMouseOut() {
+      svg.selectAll(".highlight").classed("highlight", false);
+    }
+  </script>
+</body>
+</html>

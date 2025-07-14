@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <title>Radial ⬌ Cartesian Tidy Tree – Web Material</title>
+  <style>
+    body {
+      font-family: monospace;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 1rem 0 0.25rem;
+    }
+
+    #chart {
+      width: 960px;
+      height: 960px;
+    }
+
+    button {
+      margin: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* links */
+    .link {
+      fill: none;
+      stroke: #bbb;
+      stroke-width: 1.2px;
+    }
+
+    .link.highlight {
+      stroke: darkorange;
+      stroke-width: 2.5px;
+    }
+
+    /* nodes */
+    .node circle {
+      r: 4px;
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
+
+    .node.highlight circle {
+      stroke: darkorange;
+      stroke-width: 2.5px;
+    }
+
+    /* labels */
+    .node text {
+      font-size: 12px;
+      dominant-baseline: central;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+    }
+
+    .node.leaf text {
+      fill: #0066cc;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+    .node.leaf:hover circle {
+      fill: #cce5ff;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="toggleView">Switch to Cartesian View</button>
+  <svg id="chart"></svg>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    /* ------------------------------------------------------------------
+     * 1. DATA (unchanged)
+     * ----------------------------------------------------------------*/
+    const data = {
+      name: "Web Material",
+      children: [
+        {
+          name: "Text",
+          children: [
+            {
+              name: "Characters",
+              children: [
+                { name: "Asterisk Drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" } ,
+                { name: "Spotlight", url: "https://leils.github.io/web-sites/spotlight.html",}
+              ]
+            },
+            {
+              name: "Ascii",
+              children: [
+                { name: "Runner", url: "https://leils.github.io/web-sites/runner.html" }
+              ]
+            },
+            { name: "hello", url: "https://leils.github.io/web-sites/hello.html" },
+            { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html"},
+            { name: "alternates 2", url: "https://leils.github.io/web-sites/alternates2.html"},
+            { name: "horoscope", url: "https://leils.github.io/web-sites/horoscope.html"},
+          ]
+
+        },
+        {
+          name: "HTML Elements",
+          children: [
+            {
+              name: "Pop-ups",
+              children: [
+                { name: "stickey Note Brain", url: "https://leils.github.io/web-sites/stickynotebrain.html" },
+                { name: "attention", url: "https://leils.github.io/web-sites/attention.html" },
+                { name: "inescapable", url: "https://leils.github.io/web-sites/inescapable.html" },
+              ]
+            },
+            {
+              name: "Radio",
+              children: [
+                { name: "options", url: "https://leils.github.io/web-sites/options.html" },
+                { name: "select", url: "https://leils.github.io/web-sites/select.html" },
+                { name: "firework", url: "https://leils.github.io/web-sites/firework.html" },
+                { name: "ripple", url: "https://leils.github.io/web-sites/ripple.html" },
+              ]
+            },
+            {
+              name: "Select",
+              children: [
+                {name: "participation",url: "https://leils.github.io/web-sites/participation.html"},
+              ]
+            },
+            { 
+              name: "Range",
+              children: [
+                { name: "locations", url: "https://leils.github.io/web-sites/locations.html" },
+                { name: "airplane", url: "https://leils.github.io/web-sites/airplane.html" },
+                { name: "today", url: "https://leils.github.io/web-sites/10to10.html"},
+                { name: "cost", url: "https://leils.github.io/web-sites/cost.html"},
+              ]
+            },
+            {
+              name: "Img",
+              children: [
+                {name: "snapshot", url: "https://leils.github.io/web-sites/snapshot.html"},
+                {name: "stopmotion", url: "https://leils.github.io/web-sites/stopmotion.html"},
+              ]
+            },
+            {
+              name: "Cursor",
+              children: [
+                {name: "change", url: "https://leils.github.io/web-sites/change.html"},
+              ]
+            }
+          ]
+        },
+        {
+          name: "Interactions",
+          children: [
+            {
+              name: "Memory",
+              children: [
+                { name: "Visit", url: "https://leils.github.io/web-sites/visit.html" },
+                { name: "Alone", url: "https://leils.github.io/web-sites/alone.html" },
+                { name: "Alone2", url: "https://leils.github.io/web-sites/alone2.html" },
+              ]
+            },
+            {
+              name: "Hover",
+              children: [
+                { name: "Alternate(s)", url:"https://leils.github.io/web-sites/alternates.html"},
+                { name: "flashlight", url: "https://leils.github.io/web-sites/flashlight.html" },
+                { name: "biofluorescence", url: "https://leils.github.io/web-sites/biofluorescence.html"}
+
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    /* ------------------------------------------------------------------
+     * 2. SVG + layout helpers
+     * ----------------------------------------------------------------*/
+    const diameter = 960,
+      radius = diameter / 2;
+
+    const svg = d3.select("#chart")
+      .attr("viewBox", [-radius, -radius, diameter, diameter])
+      .style("font", "10px monospace");
+
+    // Link generator for curved Cartesian paths (left ➜ right)
+    const linkHorizontal = d3.linkHorizontal()
+      .x(d => d.y - radius)
+      .y(d => d.x - radius);
+
+    // Helper to convert polar → Cartesian for radial layout
+    const project = (angle, r) => [
+      Math.cos(angle - Math.PI / 2) * r,
+      Math.sin(angle - Math.PI / 2) * r
+    ];
+
+    /* ------------------------------------------------------------------
+     * 3. Draw / update routine
+     * ----------------------------------------------------------------*/
+    let radial = false;
+    document.getElementById("toggleView").addEventListener("click", () => {
+      radial = !radial;
+      document.getElementById("toggleView").textContent = radial ? "Switch to Cartesian View" : "Switch to Radial View";
+      updateTree();
+    });
+
+    function updateTree() {
+      svg.selectAll(".nodes, .links").remove();
+
+      // Choose layout
+      const layout = radial
+        ? d3.cluster().size([2 * Math.PI, radius - 120])
+        : d3.tree().size([radius * 1.8, diameter - 200]);
+
+      const root = d3.hierarchy(data);
+      layout(root);
+
+      /* ---- Links ---- */
+      svg.append("g").attr("class", "links")
+        .selectAll("path")
+        .data(root.links())
+        .join("path")
+        .attr("class", "link")
+        .attr("d", d => radial
+          // Radial (cubic Bézier in polar space)
+          ? `M${project(d.target.x, d.target.y)}C${project(d.target.x, (d.target.y + d.source.y) / 2)} ${project(d.source.x, (d.target.y + d.source.y) / 2)} ${project(d.source.x, d.source.y)}`
+          // Cartesian (curved horizontal link)
+          : linkHorizontal({ source: d.source, target: d.target })
+        );
+
+      /* ---- Nodes ---- */
+      const node = svg.append("g").attr("class", "nodes")
+        .selectAll("g")
+        .data(root.descendants())
+        .join("g")
+        .attr("class", d => "node" + (d.children ? "" : " leaf"))
+        .attr("transform", d => radial
+          ? `translate(${project(d.x, d.y)})`
+          : `translate(${d.y - radius},${d.x - radius})`)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);
+
+      node.append("circle");
+
+      // Labels
+      node.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => radial ? (d.x < Math.PI ? 10 : -10) : 8)
+        .attr("text-anchor", d => radial ? (d.x < Math.PI ? "start" : "end") : "start")
+        .attr("transform", d => radial ? `rotate(${(d.x * 180 / Math.PI - 90 + (d.x > Math.PI ? 180 : 0))})` : null)
+        .text(d => d.data.name)
+        .on("click", (event, d) => {
+          if (!d.children && d.data.url) window.open(d.data.url, "_blank");
+        });
+    }
+
+    /* ------------------------------------------------------------------
+     * 4. Highlight-on-hover helpers
+     * ----------------------------------------------------------------*/
+    function handleMouseOver(event, d) {
+      const pathNodes = new Set();
+      let cur = d;
+      while (cur) { pathNodes.add(cur); cur = cur.parent; }
+      svg.selectAll(".node").classed("highlight", n => pathNodes.has(n));
+      svg.selectAll(".link").classed("highlight", l => pathNodes.has(l.target));
+    }
+
+    function handleMouseOut() {
+      svg.selectAll(".highlight").classed("highlight", false);
+    }
+
+    // Initial render
+    updateTree();
+  </script>
+</body>
+
+</html>
