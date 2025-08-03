@@ -9,9 +9,10 @@
     rel="stylesheet">
 
   <meta charset="UTF-8">
-  <title>Radial ⬌ Cartesian Tidy Tree – Web Material</title>
+  <title>Web Material Map</title>
   <style>
     body {
+      background-color: bisque;
       font-family: monospace;
       margin: 0;
       display: flex;
@@ -24,7 +25,8 @@
     }
 
     #chart {
-      width: 960px;
+      margin: 15px;
+      width: 1024px;
       height: 960px;
     }
 
@@ -32,7 +34,30 @@
       margin: 0.5rem;
       padding: 0.45rem 0.9rem;
       font-size: 1rem;
+      border-radius: 3em;
       cursor: pointer;
+    }
+
+    #toggleView {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      margin: 20px;
+    }
+
+    /* Tooltip styling */
+    #tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #fffbe6;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: none;
+      z-index: 10;
     }
 
     /* links */
@@ -64,7 +89,7 @@
     .node text {
       font-size: 12px;
       dominant-baseline: central;
-      pointer-events: none;
+      pointer-events: all;
       paint-order: stroke;
       stroke: #fff;
       stroke-width: 5px;
@@ -84,8 +109,9 @@
 </head>
 
 <body>
-  <button id="toggleView">Switch to Cartesian View</button>
+  <button id="toggleView">cartesian</button>
   <svg id="chart"></svg>
+  <div id="tooltip"></div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
@@ -101,8 +127,8 @@
             {
               name: "Characters",
               children: [
-                { name: "Asterisk Drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" } ,
-                { name: "Spotlight", url: "https://leils.github.io/web-sites/spotlight.html",}
+                { name: "Asterisk Drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" },
+                { name: "Spotlight", url: "https://leils.github.io/web-sites/spotlight.html", }
               ]
             },
             {
@@ -111,10 +137,17 @@
                 { name: "Runner", url: "https://leils.github.io/web-sites/runner.html" }
               ]
             },
+            {
+              name: "Visibility",
+              children: [
+                { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html" },
+                { name: "shush", url: "https://leils.github.io/web-sites/sleepy.html" },
+                { name: "sick", url: "https://leils.github.io/web-sites/spans.html" }
+              ]
+            },
             { name: "hello", url: "https://leils.github.io/web-sites/hello.html" },
-            { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html"},
-            { name: "alternates 2", url: "https://leils.github.io/web-sites/alternates2.html"},
-            { name: "horoscope", url: "https://leils.github.io/web-sites/horoscope.html"},
+            { name: "alternates 2", url: "https://leils.github.io/web-sites/alternates2.html" },
+            { name: "horoscope", url: "https://leils.github.io/web-sites/horoscope.html" },
           ]
 
         },
@@ -122,15 +155,7 @@
           name: "HTML Elements",
           children: [
             {
-              name: "Pop-ups",
-              children: [
-                { name: "stickey Note Brain", url: "https://leils.github.io/web-sites/stickynotebrain.html" },
-                { name: "attention", url: "https://leils.github.io/web-sites/attention.html" },
-                { name: "inescapable", url: "https://leils.github.io/web-sites/inescapable.html" },
-              ]
-            },
-            {
-              name: "Radio",
+              name: "<radio>",
               children: [
                 { name: "options", url: "https://leils.github.io/web-sites/options.html" },
                 { name: "select", url: "https://leils.github.io/web-sites/select.html" },
@@ -139,31 +164,56 @@
               ]
             },
             {
-              name: "Select",
+              name: "<select>",
               children: [
-                {name: "participation",url: "https://leils.github.io/web-sites/participation.html"},
+                { name: "participation", url: "https://leils.github.io/web-sites/participation.html" },
               ]
             },
-            { 
-              name: "Range",
+            {
+              name: "<range>",
               children: [
                 { name: "locations", url: "https://leils.github.io/web-sites/locations.html" },
                 { name: "airplane", url: "https://leils.github.io/web-sites/airplane.html" },
-                { name: "today", url: "https://leils.github.io/web-sites/10to10.html"},
-                { name: "cost", url: "https://leils.github.io/web-sites/cost.html"},
+                { name: "today", url: "https://leils.github.io/web-sites/10to10.html" },
+                { name: "cost", url: "https://leils.github.io/web-sites/cost.html" },
               ]
             },
             {
-              name: "Img",
+              name: "<img>",
               children: [
-                {name: "snapshot", url: "https://leils.github.io/web-sites/snapshot.html"},
-                {name: "stopmotion", url: "https://leils.github.io/web-sites/stopmotion.html"},
+                { name: "snapshot", url: "https://leils.github.io/web-sites/snapshot.html" },
+                { name: "stopmotion", url: "https://leils.github.io/web-sites/stopmotion.html" },
               ]
             },
+            {
+              name: "<embed>",
+              children: [
+                { name: "Embeds", url: "https://leils.github.io/web-sites/embed.html" }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Browser Objects",
+          description: "Non-HTML browser objects",
+          children: [
             {
               name: "Cursor",
               children: [
-                {name: "change", url: "https://leils.github.io/web-sites/change.html"},
+                { name: "change", url: "https://leils.github.io/web-sites/change.html" }
+              ]
+            },
+            {
+              name: "Windows",
+              children: [
+                {
+                  name: "Pop-ups",
+                  children: [
+                    { name: "stickey note brain", url: "https://leils.github.io/web-sites/stickynotebrain.html" },
+                    { name: "attention", url: "https://leils.github.io/web-sites/attention.html" },
+                    { name: "inescapable", url: "https://leils.github.io/web-sites/inescapable.html" },
+                  ]
+                },
               ]
             }
           ]
@@ -182,9 +232,10 @@
             {
               name: "Hover",
               children: [
-                { name: "Alternate(s)", url:"https://leils.github.io/web-sites/alternates.html"},
+                { name: "Alternate(s)", url: "https://leils.github.io/web-sites/alternates.html" },
                 { name: "flashlight", url: "https://leils.github.io/web-sites/flashlight.html" },
-                { name: "biofluorescence", url: "https://leils.github.io/web-sites/biofluorescence.html"}
+                { name: "biofluorescence", url: "https://leils.github.io/web-sites/biofluorescence.html" },
+                { name: "blur", url: "https://leils.github.io/web-sites/blur.html" }
 
               ]
             }
@@ -220,7 +271,7 @@
     let radial = false;
     document.getElementById("toggleView").addEventListener("click", () => {
       radial = !radial;
-      document.getElementById("toggleView").textContent = radial ? "Switch to Cartesian View" : "Switch to Radial View";
+      document.getElementById("toggleView").textContent = radial ? "radial" : "cartesian";
       updateTree();
     });
 
@@ -258,6 +309,7 @@
           ? `translate(${project(d.x, d.y)})`
           : `translate(${d.y - radius},${d.x - radius})`)
         .on("mouseover", handleMouseOver)
+        .on("mousemove", handleMouseMove)
         .on("mouseout", handleMouseOut);
 
       node.append("circle");
@@ -271,7 +323,10 @@
         .text(d => d.data.name)
         .on("click", (event, d) => {
           if (!d.children && d.data.url) window.open(d.data.url, "_blank");
-        });
+        })
+        .on("mouseover", handleMouseOver)
+        .on("mousemove", handleMouseMove)
+        .on("mouseout", handleMouseOut);
     }
 
     /* ------------------------------------------------------------------
@@ -283,10 +338,29 @@
       while (cur) { pathNodes.add(cur); cur = cur.parent; }
       svg.selectAll(".node").classed("highlight", n => pathNodes.has(n));
       svg.selectAll(".link").classed("highlight", l => pathNodes.has(l.target));
+      if (d.data.description) {
+        const tooltip = document.getElementById("tooltip");
+        tooltip.textContent = d.data.description;
+        tooltip.style.display = "block";
+        const padding = 12;
+        tooltip.style.left = (event.clientX + padding) + "px";
+        tooltip.style.top = (event.clientY + padding) + "px";
+      }
     }
 
-    function handleMouseOut() {
+    function handleMouseMove(event, d) {
+      if (d.data.description) {
+        const tooltip = document.getElementById("tooltip");
+        const padding = 12;
+        tooltip.style.left = (event.clientX + padding) + "px";
+        tooltip.style.top = (event.clientY + padding) + "px";
+      }
+    }
+
+    function handleMouseOut(event, d) {
       svg.selectAll(".highlight").classed("highlight", false);
+      const tooltip = document.getElementById("tooltip");
+      tooltip.style.display = "none";
     }
 
     // Initial render
