@@ -48,6 +48,7 @@
     /* Tooltip styling */
     #tooltip {
       position: absolute;
+      max-width: 50vw;
       pointer-events: none;
       background: #fffbe6;
       border: 1px solid #ccc;
@@ -94,12 +95,14 @@
       stroke: #fff;
       stroke-width: 5px;
       stroke-linejoin: round;
+      cursor: default;
     }
 
     .node.leaf text {
       fill: #0066cc;
       cursor: pointer;
       pointer-events: all;
+      font-style: italic;
     }
 
     .node.leaf:hover circle {
@@ -120,6 +123,7 @@
      * ----------------------------------------------------------------*/
     const data = {
       name: "Web Material",
+      description: "Web Material is an exercise in considering the web (its elements, its characteristics, its members) as a material that can be played with, used as a storytelling mechanism, and as a vessel for art making. At its core, this is a map of the places that I have explored in this thought processess; entirely unfinished, incomplete, and in progress. \nWeb material changes quickly over time, unique not in its change but the rapid nature of it, along with its ability to self-document and archive.",
       children: [
         {
           name: "Text",
@@ -127,14 +131,14 @@
             {
               name: "Characters",
               children: [
-                { name: "Asterisk Drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" },
-                { name: "Spotlight", url: "https://leils.github.io/web-sites/spotlight.html", }
+                { name: "asterisk drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" },
+                { name: "spotlight", url: "https://leils.github.io/web-sites/spotlight.html", }
               ]
             },
             {
               name: "Ascii",
               children: [
-                { name: "Runner", url: "https://leils.github.io/web-sites/runner.html" }
+                { name: "runner", url: "https://leils.github.io/web-sites/runner.html" }
               ]
             },
             {
@@ -153,6 +157,7 @@
         },
         {
           name: "HTML Elements",
+          description: "Core elements, building blocks of the web. How do we use them in unexpected ways?",
           children: [
             {
               name: "<radio>",
@@ -188,7 +193,7 @@
             {
               name: "<embed>",
               children: [
-                { name: "Embeds", url: "https://leils.github.io/web-sites/embed.html" }
+                { name: "embeded", url: "https://leils.github.io/web-sites/embed.html" }
               ]
             }
           ]
@@ -212,6 +217,7 @@
                     { name: "stickey note brain", url: "https://leils.github.io/web-sites/stickynotebrain.html" },
                     { name: "attention", url: "https://leils.github.io/web-sites/attention.html" },
                     { name: "inescapable", url: "https://leils.github.io/web-sites/inescapable.html" },
+                    { name: "hydra", url: "https://leils.github.io/web-sites/hydra.html"}
                   ]
                 },
               ]
@@ -223,22 +229,36 @@
           children: [
             {
               name: "Memory",
+              description: "Local in-browser memory usage",
               children: [
-                { name: "Visit", url: "https://leils.github.io/web-sites/visit.html" },
-                { name: "Alone", url: "https://leils.github.io/web-sites/alone.html" },
-                { name: "Alone2", url: "https://leils.github.io/web-sites/alone2.html" },
+                { name: "visit", url: "https://leils.github.io/web-sites/visit.html" },
+                { name: "alone", url: "https://leils.github.io/web-sites/alone.html" },
+                { name: "alone2", url: "https://leils.github.io/web-sites/alone2.html" },
               ]
             },
             {
               name: "Hover",
               children: [
-                { name: "Alternate(s)", url: "https://leils.github.io/web-sites/alternates.html" },
+                { name: "alternate(s)", url: "https://leils.github.io/web-sites/alternates.html" },
                 { name: "flashlight", url: "https://leils.github.io/web-sites/flashlight.html" },
                 { name: "biofluorescence", url: "https://leils.github.io/web-sites/biofluorescence.html" },
                 { name: "blur", url: "https://leils.github.io/web-sites/blur.html" }
 
               ]
+            },
+            {
+              name: "Scroll",
+              children: [
+                { name: "sfcfcfc", url: "https://leils.github.io/web-sites/sfcfcfc.html"}
+              ]
             }
+          ]
+        },
+        {
+          name: "Recognizable Players",
+          description: "Sites around the web whose visual language is meaningful. Do their languages become an inherent part of the material?",
+          children: [
+            { name: "access", url: "https://leils.github.io/access/"}
           ]
         }
       ]
@@ -271,7 +291,7 @@
     let radial = false;
     document.getElementById("toggleView").addEventListener("click", () => {
       radial = !radial;
-      document.getElementById("toggleView").textContent = radial ? "radial" : "cartesian";
+      document.getElementById("toggleView").textContent = radial ? "cartesian" : "radial";
       updateTree();
     });
 
