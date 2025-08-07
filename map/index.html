@@ -24,6 +24,10 @@
       margin: 1rem 0 0.25rem;
     }
 
+    dialog {
+      max-width: 50vw;
+    }
+
     #chart {
       margin: 15px;
       width: 1024px;
@@ -34,20 +38,23 @@
       margin: 0.5rem;
       padding: 0.45rem 0.9rem;
       font-size: 1rem;
-      border-radius: 3em;
+      border-radius: 1em;
       cursor: pointer;
+      border-color: gold;
     }
 
-    #toggleView {
+    #controls {
       position: fixed;
       bottom: 0;
       right: 0;
       margin: 20px;
+      display: flex;
     }
 
     /* Tooltip styling */
     #tooltip {
       position: absolute;
+      margin: 12px;
       max-width: 50vw;
       pointer-events: none;
       background: #fffbe6;
@@ -99,7 +106,8 @@
     }
 
     .node.leaf text {
-      fill: #0066cc;
+      /* fill: #0066cc; */
+      stroke: gold;
       cursor: pointer;
       pointer-events: all;
       font-style: italic;
@@ -112,41 +120,65 @@
 </head>
 
 <body>
-  <button id="toggleView">cartesian</button>
+  <div id="controls">
+    <button id="toggleView">radial</button>
+    <button id="info">?</button>
+  </div>
   <svg id="chart"></svg>
   <div id="tooltip"></div>
 
+  <dialog id="infodialog">
+    Web Material exercises are created to run an modern desktops, and have little to no mobile support. Some may only work in Chrome; some may require pop-ups or local storage. These aren't necessarily built to run broadly or work forever; they are sketches, tests, and experiments that serve a particularly small purpose; exploring how the internet and the web can be used as the material for expression.
+    <br>
+    <br>
+    Web Material is a research-in-progress created by <a href="https://leiac.me/">Leia S Chang</a>. 
+    <form method="dialog">
+      <button id="dialogCloseBtn">OK</button>
+    </form>
+  </dialog>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
+    	const infoButton = document.getElementById("info");
+			const infodialog = document.getElementById("infodialog");
+			const dialogClose= document.getElementById("dialogCloseBtn");
+
+			info.addEventListener("click", () => {
+				infodialog.showModal();
+			});
+
+			dialogClose.addEventListener("click", () => {
+				infodialog.close();
+			});
     /* ------------------------------------------------------------------
      * 1. DATA (unchanged)
      * ----------------------------------------------------------------*/
     const data = {
       name: "Web Material",
-      description: "Web Material is an exercise in considering the web (its elements, its characteristics, its members) as a material that can be played with, used as a storytelling mechanism, and as a vessel for art making. At its core, this is a map of the places that I have explored in this thought processess; entirely unfinished, incomplete, and in progress. \nWeb material changes quickly over time, unique not in its change but the rapid nature of it, along with its ability to self-document and archive.",
+      description: "Web Material is an exercise in considering the web (its elements, its characteristics, its members) as a material that can be played with, used as a storytelling mechanism, and as a vessel for art making. At its core, this is a map of the places that I have explored in this thought processess; entirely unfinished, incomplete, and in progress. *** Web material changes quickly over time, unique not in its change but the rapid nature of it, along with its ability to self-document and archive. *** Most of these experiments are desktop-only, some require pop-ups, some probably won't work well on browsers outside of Chrome.",
       children: [
         {
           name: "Text",
+          description: "Text, with meaning and without meaning. This is all characters on screen.",
           children: [
             {
               name: "Characters",
               children: [
-                { name: "asterisk drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html" },
-                { name: "spotlight", url: "https://leils.github.io/web-sites/spotlight.html", }
+                { name: "asterisk drawing", url: "https://leils.github.io/web-sites/asterisk_drawing.html", description: "Character visibility traces where your cursor moves, drawing its history." },
+                { name: "spotlight", url: "https://leils.github.io/web-sites/spotlight.html", description: "Thought: what happens if elements on the screen want to avoid you?" }
               ]
             },
             {
               name: "Ascii",
               children: [
-                { name: "runner", url: "https://leils.github.io/web-sites/runner.html" }
+                { name: "runner", url: "https://leils.github.io/web-sites/runner.html", description: "Animating ASCII with clicks" }
               ]
             },
             {
               name: "Visibility",
               children: [
-                { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html" },
-                { name: "shush", url: "https://leils.github.io/web-sites/sleepy.html" },
-                { name: "sick", url: "https://leils.github.io/web-sites/spans.html" }
+                { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html", description: "Interactive blackout poetry" },
+                { name: "shush", url: "https://leils.github.io/web-sites/sleepy.html", description: "Website with personality using only one characteristic.  Playing with visibility and interaction."},
+                { name: "sick", url: "https://leils.github.io/web-sites/spans.html", description: "Another experiment with visibility fog and cursor passover"}
               ]
             },
             { name: "hello", url: "https://leils.github.io/web-sites/hello.html" },
@@ -372,9 +404,12 @@
       if (d.data.description) {
         const tooltip = document.getElementById("tooltip");
         const padding = 12;
-        tooltip.style.left = (event.clientX + padding) + "px";
-        tooltip.style.top = (event.clientY + padding) + "px";
-      }
+        // Use clientX/clientY plus scroll offsets to get correct position regardless of zoom and scroll
+        const x = event.clientX + window.scrollX + padding;
+        const y = event.clientY + window.scrollY + padding;
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+       }
     }
 
     function handleMouseOut(event, d) {
