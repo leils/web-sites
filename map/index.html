@@ -63,7 +63,7 @@
       padding: 8px 12px;
       font-size: 14px;
       color: #333;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       display: none;
       z-index: 10;
     }
@@ -128,27 +128,37 @@
   <div id="tooltip"></div>
 
   <dialog id="infodialog">
-    Web Material exercises are created to run an modern desktops, and have little to no mobile support. Some may only work in Chrome; some may require pop-ups or local storage. These aren't necessarily built to run broadly or work forever; they are sketches, tests, and experiments that serve a particularly small purpose; exploring how the internet and the web can be used as the material for expression.
+    Come back on a desktop browser!
+    <br>
+    Web Material exercises are created to run an modern desktops, and have little to no mobile support. Some may only
+    work in Chrome; some may require pop-ups or local storage. These aren't necessarily built to run broadly or work
+    forever; they are sketches, tests, and experiments that serve a particularly small purpose; exploring how the
+    internet and the web can be used as the material for expression.
     <br>
     <br>
-    Web Material is a research-in-progress created by <a href="https://leiac.me/">Leia S Chang</a>. 
+    Web Material is a research-in-progress created by <a href="https://leiac.me/">Leia S Chang</a>.
     <form method="dialog">
       <button id="dialogCloseBtn">OK</button>
     </form>
   </dialog>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    	const infoButton = document.getElementById("info");
-			const infodialog = document.getElementById("infodialog");
-			const dialogClose= document.getElementById("dialogCloseBtn");
+    const infoButton = document.getElementById("info");
+    const infodialog = document.getElementById("infodialog");
+    const dialogClose = document.getElementById("dialogCloseBtn");
 
-			info.addEventListener("click", () => {
-				infodialog.showModal();
-			});
+    info.addEventListener("click", () => {
+      infodialog.showModal();
+    });
 
-			dialogClose.addEventListener("click", () => {
-				infodialog.close();
-			});
+    dialogClose.addEventListener("click", () => {
+      infodialog.close();
+    });
+
+    // check for mobile devices: desktop devices will be able to use hover
+    if(window.matchMedia("(any-hover:none)").matches) { 
+      infodialog.showModal();
+    }
     /* ------------------------------------------------------------------
      * 1. DATA (unchanged)
      * ----------------------------------------------------------------*/
@@ -177,8 +187,8 @@
               name: "Visibility",
               children: [
                 { name: "blackout", url: "https://leils.github.io/web-sites/blackout.html", description: "Interactive blackout poetry" },
-                { name: "shush", url: "https://leils.github.io/web-sites/sleepy.html", description: "Website with personality using only one characteristic.  Playing with visibility and interaction."},
-                { name: "sick", url: "https://leils.github.io/web-sites/spans.html", description: "Another experiment with visibility fog and cursor passover"}
+                { name: "shush", url: "https://leils.github.io/web-sites/sleepy.html", description: "Website with personality using only one characteristic.  Playing with visibility and interaction." },
+                { name: "sick", url: "https://leils.github.io/web-sites/spans.html", description: "Another experiment with visibility fog and cursor passover" }
               ]
             },
             { name: "hello", url: "https://leils.github.io/web-sites/hello.html" },
@@ -249,7 +259,7 @@
                     { name: "stickey note brain", url: "https://leils.github.io/web-sites/stickynotebrain.html" },
                     { name: "attention", url: "https://leils.github.io/web-sites/attention.html" },
                     { name: "inescapable", url: "https://leils.github.io/web-sites/inescapable.html" },
-                    { name: "hydra", url: "https://leils.github.io/web-sites/hydra.html"}
+                    { name: "hydra", url: "https://leils.github.io/web-sites/hydra.html" }
                   ]
                 },
               ]
@@ -281,7 +291,7 @@
             {
               name: "Scroll",
               children: [
-                { name: "sfcfcfc", url: "https://leils.github.io/web-sites/sfcfcfc.html"}
+                { name: "sfcfcfc", url: "https://leils.github.io/web-sites/sfcfcfc.html" }
               ]
             }
           ]
@@ -290,8 +300,8 @@
           name: "Recognizable Players",
           description: "Sites around the web whose visual language is meaningful. Do their languages become an inherent part of the material?",
           children: [
-            { name: "access", url: "https://leils.github.io/access/"},
-			  { name: "slides", url: "https://docs.google.com/presentation/d/e/2PACX-1vTdUm0u7VKJPJKU7NUoPc9nRmk9IJuWjLyCyXkYOEUKU1KbhuUCoaGrT5GKOlIniLXpQU8IBOCHwg8M/pub?start=true&loop=true&delayms=100&slide=id.g375f7a0590c_1_54", description: "This animation is actually a published google slide presentation with auto-advancing, which it turns out you can arbitrarily set the delay of."}
+            { name: "access", url: "https://leils.github.io/access/" },
+            { name: "slides", url: "https://docs.google.com/presentation/d/e/2PACX-1vTdUm0u7VKJPJKU7NUoPc9nRmk9IJuWjLyCyXkYOEUKU1KbhuUCoaGrT5GKOlIniLXpQU8IBOCHwg8M/pub?start=true&loop=true&delayms=100&slide=id.g375f7a0590c_1_54", description: "This animation is actually a published google slide presentation with auto-advancing, which it turns out you can arbitrarily set the delay of." }
           ]
         }
       ]
@@ -410,7 +420,7 @@
         const y = event.clientY + window.scrollY + padding;
         tooltip.style.left = x + "px";
         tooltip.style.top = y + "px";
-       }
+      }
     }
 
     function handleMouseOut(event, d) {
