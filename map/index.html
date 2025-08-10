@@ -24,10 +24,6 @@
       margin: 1rem 0 0.25rem;
     }
 
-    dialog {
-      max-width: 50vw;
-    }
-
     #chart {
       margin: 15px;
       width: 1024px;
@@ -115,6 +111,19 @@
 
     .node.leaf:hover circle {
       fill: #cce5ff;
+    }
+
+    @media (min-width:320px)  { 
+      /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */ 
+      dialog {
+        max-width: 90vw;
+      }
+    }
+    @media (min-width:801px)  { 
+      /* tablet, landscape iPad, lo-res laptops ands desktops */ 
+      dialog {
+        max-width: 50vw;
+      }
     }
   </style>
 </head>
