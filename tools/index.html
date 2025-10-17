@@ -1,18 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>tools</title>
-  </head>
-  <body>
-    <main>
-        <h1>lsc tools</h1>  
+    <title>web ~ sites</title>
+    <style>
+        body {
+            padding: 16px;
+            display: block;
+            height: 100vh;
+            margin: 0;
+            font-family: monospace;
+            user-select: none;
+            background-color: bisque;
+        }
+
+        h1 {
+          font-style: italic;
+        }
+
+        ul {
+            width: 100%;
+            margin: 24px 0px;
+        }
+
+        li {
+            max-width: 300px;
+            margin-bottom: 20px;
+            line-height: 1.3em;
+        }
+
+        @media (min-width: 768px) {
+            ul {
+                /* max-height: 60vh; */
+                column-count: 2;
+                /* Set the number of columns */
+                column-gap: 20px;
+                /* Adjust the gap between columns */
+            }
+        }
+
+        a {
+            color: cornflowerblue;
+        }
+
+        a:visited {
+            color: cornflowerblue;
+        }
+    </style>
+</head>
+
+<body>
+  <h1>lsc tools</h1>  
+
 	<ul>
-		<li><a href="./captcha.html">captcha</a></li>
+		<li><a href="./captcha.html">captcha styler</a> | 10.16.25</li>
 	</ul>
-    </main>
-    <script src="index.js"></script>
-  </body>
+</body>
+
 </html>
