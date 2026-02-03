@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Text Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: orangered;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: orangered;
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'IBM Plex Mono', monospace;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .captcha-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #captchaCanvas {
+            border: 3px solid #ddd;
+            max-width: 100%;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        #captchaCanvas:hover {
+            border-color: orangered;
+        }
+
+        .refresh-hint {
+            margin-top: 10px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>captcha styler</h1>
+        
+        <div class="input-group">
+            <label for="textInput">Enter Text:</label>
+            <input type="text" id="textInput" placeholder="Type something..." value="Hello World">
+        </div>
+
+        <button onclick="generateCaptcha()">Generate CAPTCHA</button>
+
+        <div class="captcha-container">
+            <canvas id="captchaCanvas" width="400" height="120"></canvas>
+            <p class="refresh-hint">Click the image to regenerate with different styling</p>
+            <button onclick="downloadImage()" style="margin-bottom: 20px;">Download Image</button>
+        </div>
+    </div>
+
+    <script>
+        function generateCaptcha() {
+            const text = document.getElementById('textInput').value || 'CAPTCHA';
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // White background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw text with random styling
+            const fontSize = Math.min(60, 300 / text.length);
+            const startX = 50;
+            const baseY = canvas.height / 2 + 20;
+
+            // First, draw text to get image data for distortion
+            ctx.save();
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const x = startX + (i * (canvas.width - 100) / text.length);
+                const rotation = (Math.random() - 0.5) * 0.6;
+                const yOffset = (Math.random() - 0.5) * 15;
+                
+                ctx.save();
+                ctx.translate(x, baseY + yOffset);
+                ctx.rotate(rotation);
+                
+                // Random font
+                const fonts = ['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana'];
+                ctx.font = `bold ${fontSize}px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
+                
+                // Black color
+                ctx.fillStyle = '#000000';
+                
+                // Draw character
+                ctx.fillText(char, 0, 0);
+                
+                ctx.restore();
+            }
+            ctx.restore();
+
+            // Apply wave distortion
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const distorted = ctx.createImageData(canvas.width, canvas.height);
+            
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    // Apply sine wave distortion
+                    const offsetX = Math.sin(y / 20) * 8 + Math.sin(x / 30) * 3;
+                    const offsetY = Math.cos(x / 25) * 5 + Math.sin(y / 15) * 2;
+                    
+                    const srcX = Math.floor(x - offsetX);
+                    const srcY = Math.floor(y - offsetY);
+                    
+                    if (srcX >= 0 && srcX < canvas.width && srcY >= 0 && srcY < canvas.height) {
+                        const srcIdx = (srcY * canvas.width + srcX) * 4;
+                        const dstIdx = (y * canvas.width + x) * 4;
+                        
+                        distorted.data[dstIdx] = imageData.data[srcIdx];
+                        distorted.data[dstIdx + 1] = imageData.data[srcIdx + 1];
+                        distorted.data[dstIdx + 2] = imageData.data[srcIdx + 2];
+                        distorted.data[dstIdx + 3] = imageData.data[srcIdx + 3];
+                    } else {
+                        const dstIdx = (y * canvas.width + x) * 4;
+                        distorted.data[dstIdx] = 255;
+                        distorted.data[dstIdx + 1] = 255;
+                        distorted.data[dstIdx + 2] = 255;
+                        distorted.data[dstIdx + 3] = 255;
+                    }
+                }
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.putImageData(distorted, 0, 0);
+
+            // Add 1 organic strike-through line
+            const numLines = 1;
+            for (let i = 0; i < numLines; i++) {
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2 + Math.random() * 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                const startY = 30 + Math.random() * 60;
+                const endY = 30 + Math.random() * 60;
+                const segments = 8;
+                
+                for (let j = 0; j <= segments; j++) {
+                    const x = (canvas.width / segments) * j;
+                    const y = startY + (endY - startY) * (j / segments) + Math.sin(j * 0.8) * 15 + (Math.random() - 0.5) * 10;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+
+        // Generate on load
+        generateCaptcha();
+
+        // Download function
+        function downloadImage() {
+            const canvas = document.getElementById('captchaCanvas');
+            const link = document.createElement('a');
+            link.download = 'captcha.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Regenerate on canvas click
+        document.getElementById('captchaCanvas').addEventListener('click', generateCaptcha);
+
+        // Generate on Enter key
+        document.getElementById('textInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateCaptcha();
+            }
+        });
+    </script>
+</body>
+</html>
