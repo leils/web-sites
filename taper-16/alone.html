@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Alone (Taper #16)</title>
+
+	<!-- “Alone” Copyright (C) 2026 Leia Chang
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright 
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #16: For Good Measure, Spring 2026:
+
+https://taper.badquar.to/16/options.html
+
+How often do you measure your time by what you're not doing? 
+Switch to another tab, step away from your computer, close
+your browser, touch grass. When you come back, we'll see you.
+
+-->
+
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden
+		}
+
+		a {
+			color: #eee;
+			text-decoration: none
+		}
+
+		header {
+			margin: 0;
+			padding: 0;
+			background-color: #444;
+			color: #bbb;
+			position: relative;
+			z-index: 1000
+		}
+
+		header>h1 {
+			margin: 0;
+			font-size: 12px;
+			font-family: sans-serif;
+			border-bottom: 1px #999 solid;
+			padding: 5px 10px;
+			line-height: 17px
+		}
+	</style>
+</head>
+
+<body>
+	<header id=nav>
+		<h1>
+			<a href="prev.html">&lt;&lt;</a> &nbsp;
+			<a href="index.html">Taper #16 :
+				For Good Measure</a> : Spring 2026 &nbsp;
+			<a href="next.html">&gt;&gt;</a><br>
+			<a href="alone.html">“Alone”</a> by
+			<a href="about.html#leiachang">Leia Chang</a>
+		</h1>
+	</header>
+
+  <style>
+		body {
+			background-color: bisque;
+		}
+        #wr{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+			white-space: pre-line;
+            font-family: monospace;
+            text-wrap: wrap;
+			text-align: center;
+        }
+    </style>
+
+	<div id="wr">
+   		<div>Hello, visitor. </div>
+		<div id="last"></div>
+	</div>
+    <script>
+        const u = [
+            [1, " second"],
+            [60, " minute"],
+            [60 * 60, " hour"],
+            [60 * 60 * 24, " day"]
+        ];
+		const w = document.getElementById('wr');
+		const l = document.getElementById('last');
+        function dTime(sec) {
+            let bestUn = u[0];
+            for (const un of u) {
+                if (sec >= un[0]) {
+                    bestUn = un;
+                }
+            }
+            const [div, label] = bestUn;
+            let n = Math.floor(sec/div)
+            let t = n + " " + label;
+            if (n != 1) {
+                t += "s"
+            }
+            return t;
+        }
+		function randText() {
+			var t=['I hope you had a nice time.','Was it worth it?','I missed you.','What did I miss?'];
+			return t[Math.floor(Math.random() * t.length)];
+		}
+        function getTime() {
+            let left= localStorage.getItem('leftAt');
+            if (left) {
+                d = new Date(parseInt(left))
+                s = Math.floor((Date.now() - d) / 1_000);
+                l.textContent = `You've been away. \nI've been alone for ${dTime(s)}. ${randText()}`;
+            } else {
+                l.textContent = "Nice to meet you.";
+            }
+        }
+        document.onvisibilitychange = function () {
+            if (document.visibilityState === 'hidden') {
+                localStorage.setItem("leftAt", Date.now());
+            }
+            if (document.visibilityState === "visible") {
+                getTime();
+            }
+        }
+        getTime();
+    </script>
+</body>
+
+</html>

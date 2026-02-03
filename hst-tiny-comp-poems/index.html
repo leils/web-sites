@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>lsc poem</title>
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      background-color: bisque;
+    }
+
+    #poem {
+      width: 50vw;
+      height: 80vh;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <div id="poem">
+  </div>
+
+  <script>
+    var e = ['<input type=\"radio\"/>', '<input type=\"checkbox\"/>']
+    var p = ['male','female','citizen','non-citizen','employed','unemployed','naturalized']
+    var count = 0;
+
+    function r(n) {
+      return Math.floor(Math.random() * n);
+    }
+
+    function l(array) {
+      return array.length;
+    }
+
+    function create(htmlStr) {
+        var frag = document.createDocumentFragment(),
+            temp = document.createElement('div');
+        temp.innerHTML = htmlStr;
+        while (temp.firstChild) {
+            frag.appendChild(temp.firstChild);
+        }
+        return frag;
+    }
+
+    function insertE() {
+      var fragment = create('<div>Hello!</div><p>...</p>');
+    }
+
+    function write() {
+      for (i = 0; i < count; i++) {
+        let line = document.createElement(`div`);
+        // line.innerHTML = phrases[Math.floor(Math.random() * phrases.length)] + ` ` + nouns[Math.floor(Math.random() * nouns.length)];
+        // line.innerHTML = phrases[r(l(phrases))] + ` ` + nouns[r(l(nouns))];
+        line.innerHTML = e[r(l(e))] + p[r(l(p))];
+
+        line.style.position = `absolute`;
+        line.style.left = `${(Math.random() * 50) + 15}%`;
+        line.style.top = `${(Math.random() * 80) + 10}%`;
+        // line.style.color = `rgba(${r(255)},${r(255)},${r(255)},${Math.random()})`;
+
+        let poem = document.querySelector(`#poem`);
+        poem.appendChild(line);
+      }
+
+      count++;
+    }
+
+    write();
+    setInterval(write, 1000);
+  </script>
+</body>
+
+</html>

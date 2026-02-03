@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>from~to (Taper #16)</title>
+
+	<!-- “from~to” Copyright (C) 2026 Leia Chang
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright 
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #16: For Good Measure, Spring 2026:
+
+https://taper.badquar.to/16/options.html
+
+From one thing to another, from here to there. 
+I take comfort in building arbitrary scales, comparisons that don't
+sit in the limit of making sense. These scales mean nothing,
+but in them there is a kind of solidity; I understand their 
+categories better having held them together.  
+Where are you on the scale from here to home? 
+Where are you on the scale of stranger to immigrant? 
+Where are you on the scale of there to found? 
+
+-->
+
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden
+		}
+
+		a {
+			color: #eee;
+			text-decoration: none
+		}
+
+		header {
+			margin: 0;
+			padding: 0;
+			background-color: #444;
+			color: #bbb;
+			position: relative;
+			z-index: 1000
+		}
+
+		header>h1 {
+			margin: 0;
+			font-size: 12px;
+			font-family: sans-serif;
+			border-bottom: 1px #999 solid;
+			padding: 5px 10px;
+			line-height: 17px
+		}
+	</style>
+</head>
+
+<body>
+	<header id=nav>
+		<h1>
+			<a href="prev.html">&lt;&lt;</a> &nbsp;
+			<a href="index.html">Taper #16 :
+				For Good Measure</a> : Spring 2026 &nbsp;
+			<a href="next.html">&gt;&gt;</a><br>
+			<a href="fromto.html">“from~to”</a> by
+			<a href="about.html#leiachang">Leia Chang</a>
+		</h1>
+	</header>
+
+	<style>
+		.wrapper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			white-space: pre-line;
+			font-family: monospace;
+			text-wrap: wrap;
+			text-align: center;
+			background-color: black;
+			color: antiquewhite;
+		}
+
+		.range {
+			width: 400px;
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		label {
+			margin: 12px;
+		}
+	</style>
+	<div class="wrapper">
+		<div class="range">
+			<label id="p1" for="place">one</label>
+			<input type="range" id="place" name="place" min="1" max="10" />
+			<label id="p2" for="place">other</label>
+		</div>
+	</div>
+
+	<script>
+		const a = "one,other,here,there,citizen,immigrant,home,wandering,serious,lost,visitor,found,stranger,object,person,lover".split(',');
+		const p1 = document.getElementById('p1');
+		const p2 = document.getElementById('p2');
+
+		function rand() {
+			return a[Math.floor(Math.random() * a.length)]
+		}
+		document.querySelector("#place").addEventListener("input", (event) => {
+			if (event.target.value > 5) {
+				p1.textContent = rand();
+			} else {
+				p2.textContent = rand();
+			}
+		});
+
+	</script>
+</body>
+
+</html>

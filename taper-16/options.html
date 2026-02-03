@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Options (Taper #16)</title>
+
+	<!-- “Options” Copyright (C) 2026 Leia Chang
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright 
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #16: For Good Measure, Spring 2026:
+
+https://taper.badquar.to/16/options.html
+
+Gender is a yardstick; something to measure up against, be judged by. 
+By one measure you might do well, by another you might do poorly. 
+
+In this false binary, you can only choose one or the other; 
+boy or girl, woman or man. But as with the 1s and 0s of bits,
+enough decisions in opposition can choreograph a new dimension
+entirely, and what was once black and white can fade to grey. 
+And there is always another choice to make. 
+
+-->
+
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden
+		}
+
+		a {
+			color: #eee;
+			text-decoration: none
+		}
+
+		header {
+			margin: 0;
+			padding: 0;
+			background-color: #444;
+			color: #bbb;
+			position: relative;
+			z-index: 1000
+		}
+
+		header>h1 {
+			margin: 0;
+			font-size: 12px;
+			font-family: sans-serif;
+			border-bottom: 1px #999 solid;
+			padding: 5px 10px;
+			line-height: 17px
+		}
+	</style>
+</head>
+
+<body>
+	<header id=nav>
+		<h1>
+			<a href="prev.html">&lt;&lt;</a> &nbsp;
+			<a href="index.html">Taper #16 :
+				For Good Measure</a> : Spring 2026 &nbsp;
+			<a href="next.html">&gt;&gt;</a><br>
+			<a href="options.html">“Options”</a> by
+			<a href="about.html#leiachang">Leia Chang</a>
+		</h1>
+	</header>
+
+	<style>
+		body {
+			background-color: rgb(85, 84, 89);
+			color: antiquewhite;
+			overflow: scroll;
+		}
+	</style>
+
+
+	<form id="radioForm">
+		<fieldset id="first">
+			<legend>Select an option:</legend>
+			<label><input type="radio" name="option" value="boy"> boy</label><br>
+			<label><input type="radio" name="option" value="girl"> girl</label>
+		</fieldset>
+	</form>
+
+	<script>
+		var lastfs = document.getElementById("first");
+		const bodyEl = document.getElementsByTagName('body')[0];
+
+		function countGenders(s) {
+			s = s.split('-');
+			var boys = s.filter(g => g === 'boy').length;
+			return ((boys/s.length) * 100)
+		}
+
+		document.addEventListener("DOMContentLoaded", function () {
+			const radioForm = document.getElementById("radioForm");
+
+			radioForm.addEventListener("change", function (event) {
+				const selOpt = event.target.value;
+
+				if (selOpt) {
+					event.target.parentElement.style = "font-weight:bold; background-color:yellow;color:black;";
+					const fs = document.createElement("fieldset");
+					const l = document.createElement("legend");
+					l.textContent = "Thank you. Please select an option:";
+					fs.appendChild(l);
+
+					const opt1 = document.createElement("label");
+					opt1.innerHTML = `<input type="radio" name="option" value="${selOpt}-boy"> ${selOpt}-boy<br>`;
+
+					const opt2 = document.createElement("label");
+					opt2.innerHTML = `<input type="radio" name="option" value="${selOpt}-girl"> ${selOpt}-girl<br>`;
+
+					fs.appendChild(opt1);
+					fs.appendChild(opt2);
+
+					var p = countGenders(selOpt);
+					bodyEl.style.backgroundColor = 'hsl(0 0 L%)'.replace(/L/, p);
+					bodyEl.style.color = (p>70) ? 'black' : 'antiquewhite';
+					radioForm.appendChild(fs);
+					lastfs.disabled=true;
+					window.scrollTo(0, document.body.scrollHeight);
+					
+					lastfs = fs;
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
