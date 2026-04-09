@@ -73,8 +73,18 @@ And there is always another choice to make.
 	<style>
 		body {
 			background-color: rgb(85, 84, 89);
-			color: antiquewhite;
+			color: white;
 			overflow: scroll;
+		}
+
+		/* TODO: DOESN'T WORK */
+		.glitch::before {
+			content: attr(data-text); /* Pulls text from HTML attribute */
+			position: absolute;
+			left: 2px;
+			text-shadow: -2px 0 red;
+			clip: rect(44px, 450px, 56px, 0); /* Animating this creates the flicker */
+			animation: glitch-anim 2s infinite linear alternate-reverse;
 		}
 	</style>
 
@@ -104,7 +114,10 @@ And there is always another choice to make.
 				const selOpt = event.target.value;
 
 				if (selOpt) {
-					event.target.parentElement.style = "font-weight:bold; background-color:yellow;color:black;";
+					const parent = event.target.parentElement;
+					parent.style = "font-weight:bold; font-style:italic; background-color:yellow;color:black;";
+					parent.setAttribute("data-text", parent.textContent);
+					parent.classList.add("glitch");
 					const fs = document.createElement("fieldset");
 					const l = document.createElement("legend");
 					l.textContent = "Thank you. Please select an option:";
@@ -120,8 +133,9 @@ And there is always another choice to make.
 					fs.appendChild(opt2);
 
 					var p = countGenders(selOpt);
+					// TODO: Remove? 
 					bodyEl.style.backgroundColor = 'hsl(0 0 L%)'.replace(/L/, p);
-					bodyEl.style.color = (p>70) ? 'black' : 'antiquewhite';
+					bodyEl.style.color = (p>70) ? 'black' : 'white';
 					radioForm.appendChild(fs);
 					lastfs.disabled=true;
 					window.scrollTo(0, document.body.scrollHeight);
