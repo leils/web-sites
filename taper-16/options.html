@@ -72,19 +72,9 @@ And there is always another choice to make.
 
 	<style>
 		body {
-			background-color: rgb(85, 84, 89);
+			background-color: black;
 			color: white;
 			overflow: scroll;
-		}
-
-		/* TODO: DOESN'T WORK */
-		.glitch::before {
-			content: attr(data-text); /* Pulls text from HTML attribute */
-			position: absolute;
-			left: 2px;
-			text-shadow: -2px 0 red;
-			clip: rect(44px, 450px, 56px, 0); /* Animating this creates the flicker */
-			animation: glitch-anim 2s infinite linear alternate-reverse;
 		}
 	</style>
 
@@ -100,11 +90,25 @@ And there is always another choice to make.
 	<script>
 		var lastfs = document.getElementById("first");
 		const bodyEl = document.getElementsByTagName('body')[0];
+		var fields = 1;
+		const msg1 = "if a binary bit can flip, a hundred bits to build this space"
+		const msg2 = "what expanse can be shaped by another choice, given the chance"
 
-		function countGenders(s) {
-			s = s.split('-');
-			var boys = s.filter(g => g === 'boy').length;
-			return ((boys/s.length) * 100)
+		function replace(str, m, heat) {
+			let a = [...str]
+			for (const [i, c] of a.entries()) {
+				a[i] = (Math.random() < heat) ? m[i] : c;
+			}
+			return a.join("");
+
+		}
+
+		function destruct(str, heat) {
+			let a = [...str]
+			for (const [i, c] of a.entries()) {
+				a[i] = (Math.random() < heat) ? " " : c;
+			}
+			return a.join("");
 		}
 
 		document.addEventListener("DOMContentLoaded", function () {
@@ -116,31 +120,44 @@ And there is always another choice to make.
 				if (selOpt) {
 					const parent = event.target.parentElement;
 					parent.style = "font-weight:bold; font-style:italic; background-color:yellow;color:black;";
-					parent.setAttribute("data-text", parent.textContent);
-					parent.classList.add("glitch");
 					const fs = document.createElement("fieldset");
 					const l = document.createElement("legend");
 					l.textContent = "Thank you. Please select an option:";
 					fs.appendChild(l);
 
 					const opt1 = document.createElement("label");
-					opt1.innerHTML = `<input type="radio" name="option" value="${selOpt}-boy"> ${selOpt}-boy<br>`;
-
 					const opt2 = document.createElement("label");
-					opt2.innerHTML = `<input type="radio" name="option" value="${selOpt}-girl"> ${selOpt}-girl<br>`;
+
+					let newOpt1 = `${selOpt}-boy`;
+					let newOpt2 = `${selOpt}-girl`;
+
+					const heat = fields/50;
+
+					if (fields > 7){
+						newOpt1 = replace(newOpt1, msg1, heat);
+						newOpt2 = replace(newOpt2, msg2, heat);
+					}
+
+					if (fields > 10) {
+						l.textContent = destruct(l.textContent, heat);
+					}
+
+					opt1.innerHTML = `<input type="radio" name="option" value="${newOpt1}"> ${newOpt1}<br>`;
+					opt2.innerHTML = `<input type="radio" name="option" value="${newOpt2}"> ${newOpt2}<br>`;
 
 					fs.appendChild(opt1);
 					fs.appendChild(opt2);
 
-					var p = countGenders(selOpt);
-					// TODO: Remove? 
-					bodyEl.style.backgroundColor = 'hsl(0 0 L%)'.replace(/L/, p);
-					bodyEl.style.color = (p>70) ? 'black' : 'white';
 					radioForm.appendChild(fs);
 					lastfs.disabled=true;
 					window.scrollTo(0, document.body.scrollHeight);
+
+					if (fields > 50) {
+						fs.disabled = true;
+					}
 					
 					lastfs = fs;
+					fields++;
 				}
 			});
 		});
