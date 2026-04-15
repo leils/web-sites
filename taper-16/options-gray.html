@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Options (Taper #16)</title>
+
+	<!-- “Options” Copyright (C) 2026 Leia Chang
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright 
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.
+
+This is from Taper #16: For Good Measure, Spring 2026:
+
+https://taper.badquar.to/16/options.html
+
+Gender is a yardstick; something to measure up against, be judged by. 
+By one measure you might do well, by another you might do poorly. 
+
+In this false binary, you can only choose one or the other; 
+boy or girl, woman or man. But as with the 1s and 0s of bits,
+enough decisions in opposition can choreograph a new dimension
+entirely, and what was once black and white can fade to grey. 
+And there is always another choice to make. 
+
+-->
+
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden
+		}
+
+		a {
+			color: #eee;
+			text-decoration: none
+		}
+
+		header {
+			margin: 0;
+			padding: 0;
+			background-color: #444;
+			color: #bbb;
+			position: relative;
+			z-index: 1000
+		}
+
+		header>h1 {
+			margin: 0;
+			font-size: 12px;
+			font-family: sans-serif;
+			border-bottom: 1px #999 solid;
+			padding: 5px 10px;
+			line-height: 17px
+		}
+	</style>
+</head>
+
+<body>
+	<header id=nav>
+		<h1>
+			<a href="prev.html">&lt;&lt;</a> &nbsp;
+			<a href="index.html">Taper #16 :
+				For Good Measure</a> : Spring 2026 &nbsp;
+			<a href="next.html">&gt;&gt;</a><br>
+			<a href="options.html">“Options”</a> by
+			<a href="about.html#leiachang">Leia Chang</a>
+		</h1>
+	</header>
+
+	<style>
+		body {
+			background-color: #000;
+			color: #fff;
+			overflow: scroll;
+		}
+	</style>
+
+
+	<form id="rf">
+		<fieldset id="fst">
+			<legend>Select an option:</legend>
+			<label><input type="radio" name="option" value="boy" d=0> boy</label><br>
+			<label><input type="radio" name="option" value="girl" d=1> girl</label>
+		</fieldset>
+	</form>
+
+	<script>
+		var lfs= document.getElementById("fst");
+		const bes = document.getElementsByTagName('body')[0].style;
+		var f=1;
+		var c1=0;
+		const msg1="if a binary bit can flip, a hundred bits to build this space"
+		const msg2 = "what expanse can be shaped by another choice, given the chance"
+
+		function rep(str, m, h) {
+			let a=[...str]
+			for (const [i,c] of a.entries()) {a[i]=(Math.random()<h)?m[i]:c;}
+			return a.join("");
+		}
+		function des(str, h) {
+			let a=[...str]
+			for (const [i,c] of a.entries()) {
+				a[i]=(Math.random()<h)?" ":c;
+			}
+			return a.join("");
+		}
+		document.addEventListener("DOMContentLoaded", function () {
+			const rf=document.getElementById("rf");
+			rf.addEventListener("change", function (event) {
+				const sO=event.target.value;
+				const sD=event.target.getAttribute("d");
+				c1 += parseInt(event.target.getAttribute("d"));
+
+				if (sO) {
+					event.target.parentElement.style="font-weight:bold;font-style:italic;background-color:yellow;color:#000;";
+					var p=(c1/f)*100;
+					bes.backgroundColor='hsl(0 0 L%)'.replace(/L/,p);
+					bes.color=(p>70)?'#000':'#fff';
+					const fs=document.createElement("fieldset");
+					const l=document.createElement("legend");
+					l.textContent="Thank you. Please select an option:";
+					fs.appendChild(l);
+					const opt1=document.createElement("label");
+					const opt2=document.createElement("label");
+					let no1=`${sO}-boy`;
+					let no2=`${sO}-girl`;
+					const h=f/50;
+					(f>7)&&(no1=rep(no1,msg1,h),no2=rep(no2,msg2,h));
+					(f>10)&&(l.textContent=des(l.textContent,h));
+					opt1.innerHTML=`<input type="radio" name="option" value="${no1}" d=0> ${no1}<br>`;
+					opt2.innerHTML=`<input type="radio" name="option" value="${no2}" d=1> ${no2}<br>`;
+					fs.appendChild(opt1);
+					fs.appendChild(opt2);
+					rf.appendChild(fs);
+					lfs.disabled=true;
+					window.scrollTo(0, document.body.scrollHeight);
+					(f>50)&&(fs.disabled=true);
+					lfs=fs;
+					f++;
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
