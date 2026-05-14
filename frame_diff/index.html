@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Frame Diff</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: monospace; color: #888; }
+    #label { margin-top: 14px; font-size: 12px; letter-spacing: 0.08em; }
+    #mode-btn {
+      margin-top: 10px; padding: 5px 14px; background: none;
+      border: 1px solid #444; color: #888; font-family: monospace;
+      font-size: 11px; letter-spacing: 0.08em; cursor: pointer;
+    }
+    #mode-btn:hover { border-color: #aaa; color: #ccc; }
+  </style>
+</head>
+<body>
+  <div id="label">waiting for first frame...</div>
+  <button id="mode-btn">mode: color</button>
+  <script>
+    let capture;
+    let firstFrame = null;
+    let diffImg;
+    let whiteMode = false;
+    const label   = document.getElementById('label');
+    const modeBtn = document.getElementById('mode-btn');
+
+    modeBtn.addEventListener('click', function() {
+      whiteMode = !whiteMode;
+      modeBtn.textContent = whiteMode ? 'mode: white' : 'mode: color';
+    });
+
+    new p5(function(p) {
+      p.setup = function() {
+        const cnv = p.createCanvas(640, 480);
+        cnv.parent(document.body);
+        cnv.style('display', 'block');
+
+        capture = p.createCapture(p.VIDEO, function() {
+          capture.size(640, 480);
+          capture.hide();
+        });
+
+        diffImg = p.createImage(640, 480);
+      };
+
+      p.draw = function() {
+        if (capture.width === 0) return;
+
+        capture.loadPixels();
+
+        // Snapshot the first usable frame
+        if (firstFrame === null) {
+          firstFrame = p.createImage(640, 480);
+          firstFrame.copy(capture, 0, 0, 640, 480, 0, 0, 640, 480);
+          firstFrame.loadPixels();
+          label.textContent = 'showing diff from first frame — move around';
+          return;
+        }
+
+        // Build difference image
+        diffImg.loadPixels();
+        const src  = capture.pixels;
+        const ref  = firstFrame.pixels;
+        const dest = diffImg.pixels;
+
+        for (let i = 0; i < src.length; i += 4) {
+          const dr = Math.abs(src[i]     - ref[i]);
+          const dg = Math.abs(src[i + 1] - ref[i + 1]);
+          const db = Math.abs(src[i + 2] - ref[i + 2]);
+          if (whiteMode) {
+            const lum = (dr + dg + db) / 3;
+            dest[i] = dest[i + 1] = dest[i + 2] = lum;
+          } else {
+            dest[i]     = dr;
+            dest[i + 1] = dg;
+            dest[i + 2] = db;
+          }
+          dest[i + 3] = 255;
+        }
+
+        diffImg.updatePixels();
+        p.image(diffImg, 0, 0);
+      };
+
+      // Press any key to reset the reference frame
+      p.keyPressed = function() {
+        console.log(p.keyCode);
+        if (p.keyCode === 32) {
+          firstFrame = null;
+          label.textContent = 'reference reset — capturing new first frame...';
+        }
+      };
+    });
+  </script>
+</body>
+</html>

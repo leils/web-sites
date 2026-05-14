@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Frame Diff</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: monospace; color: #888; }
+    canvas { display: block; }
+    #label { margin-top: 14px; font-size: 12px; letter-spacing: 0.08em; }
+    #mode-btn {
+      margin-top: 10px; padding: 5px 14px; background: none;
+      border: 1px solid #444; color: #888; font-family: monospace;
+      font-size: 11px; letter-spacing: 0.08em; cursor: pointer;
+    }
+    #mode-btn:hover { border-color: #aaa; color: #ccc; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <div id="label">waiting for first frame...</div>
+  <button id="mode-btn">mode: color</button>
+
+  <script>
+    const canvas  = document.getElementById('canvas');
+    const ctx     = canvas.getContext('2d');
+    const label   = document.getElementById('label');
+    const modeBtn = document.getElementById('mode-btn');
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    const video = document.createElement('video');
+    video.width  = W;
+    video.height = H;
+    video.autoplay = true;
+    video.playsInline = true;
+
+    let refPixels = null;
+    let whiteMode = false;
+    let ready = false;
+
+    modeBtn.addEventListener('click', () => {
+      whiteMode = !whiteMode;
+      modeBtn.textContent = whiteMode ? 'mode: white' : 'mode: color';
+    });
+
+    document.addEventListener('keydown', () => {
+      if (!ready) return;
+      refPixels = null;
+      label.textContent = 'reference reset — capturing new first frame...';
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+      video.srcObject = stream;
+      video.play();
+      requestAnimationFrame(loop);
+    });
+
+    function loop() {
+      requestAnimationFrame(loop);
+      if (video.readyState < video.HAVE_ENOUGH_DATA) return;
+
+      ctx.drawImage(video, 0, 0, W, H);
+
+      // Snapshot the reference frame
+      if (refPixels === null) {
+        refPixels = ctx.getImageData(0, 0, W, H).data;
+        label.textContent = 'showing diff from first frame — move around';
+        ready = true;
+        return;
+      }
+
+      const frame = ctx.getImageData(0, 0, W, H);
+      const src   = frame.data;
+      const ref   = refPixels;
+
+      // we step by 4; each pixel in the frame is 4 bytes (rgba)
+      for (let i = 0; i < src.length; i += 4) {
+        // get diffs per channel
+        const dr = Math.abs(src[i]     - ref[i]);
+        const dg = Math.abs(src[i + 1] - ref[i + 1]);
+        const db = Math.abs(src[i + 2] - ref[i + 2]);
+        if (whiteMode) {
+          // average the diffs for a single white/black pixel
+          const lum = (dr + dg + db) / 3;
+          // set all three channels to the same val
+          src[i] = src[i + 1] = src[i + 2] = lum;
+        } else {
+          // directly write the diffs for each channel
+          src[i]     = dr;
+          src[i + 1] = dg;
+          src[i + 2] = db;
+        }
+        src[i + 3] = 255;
+      }
+
+      // put this back on the canvas
+      ctx.putImageData(frame, 0, 0);
+    }
+  </script>
+</body>
+</html>
