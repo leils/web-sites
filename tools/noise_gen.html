@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noise Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background: #111;
+  color: #ccc;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  width: 248px;
+  min-width: 248px;
+  background: #181818;
+  border-right: 1px solid #242424;
+  overflow-y: auto;
+  padding: 18px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.section { display: flex; flex-direction: column; gap: 10px; }
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #555;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #242424;
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.field-value {
+  font-size: 12px;
+  color: #e0e0e0;
+  font-variant-numeric: tabular-nums;
+  min-width: 44px;
+  text-align: right;
+}
+
+/* Range slider */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: #2e2e2e;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  background: #5b9cf6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { background: #7ab4ff; }
+
+/* Text/number inputs */
+input[type=number], input[type=text], select {
+  background: #222;
+  border: 1px solid #303030;
+  color: #e0e0e0;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+input[type=number]:focus,
+input[type=text]:focus,
+select:focus { border-color: #5b9cf6; }
+
+select { cursor: pointer; }
+select option { background: #222; }
+
+.size-grid {
+  display: grid;
+  grid-template-columns: 1fr 14px 1fr;
+  align-items: center;
+  gap: 4px;
+}
+.size-sep { text-align: center; color: #444; font-size: 13px; }
+
+/* Buttons */
+.btn {
+  padding: 7px 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.12s, background 0.12s;
+  width: 100%;
+  text-align: center;
+}
+.btn:hover { opacity: 0.85; }
+.btn-ghost {
+  background: #252525;
+  border: 1px solid #333;
+  color: #bbb;
+}
+.btn-download {
+  background: #1a5c2e;
+  color: #7dca98;
+  border: 1px solid #2a7a42;
+}
+.btn-download:hover { background: #1e6e36; opacity: 1; }
+
+.seed-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  align-items: center;
+}
+.seed-row input { width: 100%; }
+.seed-row .btn {
+  width: auto;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+
+/* ---- Preview area ---- */
+.preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0c0c0c;
+  overflow: hidden;
+  position: relative;
+  gap: 0;
+}
+
+canvas {
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 48px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.statusbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 14px;
+  font-size: 11px;
+  color: #444;
+  background: #0c0c0c;
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  gap: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.statusbar span { color: #666; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="app-title">Noise Generator</div>
+
+  <!-- Noise type + parameters -->
+  <div class="section">
+    <div class="section-title">Noise</div>
+
+    <div class="field">
+      <div class="field-label">Type</div>
+      <select id="noiseType">
+        <option value="white">White</option>
+        <option value="value">Value</option>
+        <option value="perlin" selected>Perlin</option>
+        <option value="worley">Worley (cellular)</option>
+        <option value="fbm">fBm (fractal)</option>
+      </select>
+    </div>
+
+    <div class="field" id="scaleField">
+      <div class="field-row">
+        <span class="field-label">Scale</span>
+        <span class="field-value" id="scaleVal">64</span>
+      </div>
+      <input type="range" id="scale" min="2" max="512" value="64">
+    </div>
+
+    <!-- fBm-only controls -->
+    <div id="fbmSection" class="hidden">
+      <div class="field" style="margin-bottom:8px">
+        <div class="field-row">
+          <span class="field-label">Octaves</span>
+          <span class="field-value" id="octavesVal">5</span>
+        </div>
+        <input type="range" id="octaves" min="1" max="8" value="5" step="1">
+      </div>
+      <div class="field" style="margin-bottom:8px">
+        <div class="field-row">
+          <span class="field-label">Persistence</span>
+          <span class="field-value" id="persistenceVal">0.50</span>
+        </div>
+        <input type="range" id="persistence" min="0.05" max="0.95" value="0.5" step="0.01">
+      </div>
+      <div class="field">
+        <div class="field-row">
+          <span class="field-label">Lacunarity</span>
+          <span class="field-value" id="lacunarityVal">2.0</span>
+        </div>
+        <input type="range" id="lacunarity" min="1.0" max="4.0" value="2.0" step="0.1">
+      </div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="section">
+    <div class="section-title">Output</div>
+
+    <div class="field">
+      <div class="field-label">Image size (px)</div>
+      <div class="size-grid">
+        <input type="number" id="imgW" value="512" min="64" max="4096" step="1">
+        <span class="size-sep">×</span>
+        <input type="number" id="imgH" value="512" min="64" max="4096" step="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-row">
+        <span class="field-label">Pixel size</span>
+        <span class="field-value" id="pixelSizeVal">1</span>
+      </div>
+      <input type="range" id="pixelSize" min="1" max="32" value="1">
+    </div>
+
+    <div class="field">
+      <div class="field-label">Color</div>
+      <select id="colorMode">
+        <option value="grayscale">Grayscale</option>
+        <option value="inverted">Inverted</option>
+        <option value="plasma">Plasma (hue cycle)</option>
+        <option value="thermal">Thermal</option>
+        <option value="viridis">Viridis</option>
+        <option value="copper">Copper</option>
+        <option value="binary">Binary (B&amp;W)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Seed -->
+  <div class="section">
+    <div class="section-title">Seed</div>
+    <div class="seed-row">
+      <input type="number" id="seed" value="42" min="0" max="999999">
+      <button class="btn btn-ghost" id="randomSeed">Randomize</button>
+    </div>
+  </div>
+
+  <!-- Download -->
+  <div class="section">
+    <button class="btn btn-download" id="download">Download PNG</button>
+  </div>
+</aside>
+
+<main class="preview">
+  <canvas id="canvas"></canvas>
+  <div class="statusbar">
+    <span id="statSize">–</span>
+    <span id="statSamples">–</span>
+    <span id="statTime">–</span>
+  </div>
+</main>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// PRNG — mulberry32, fast and seeded
+// ─────────────────────────────────────────────────────────────
+function mulberry32(seed) {
+  return function() {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Integer hash for per-pixel deterministic sampling
+function ihash(x, y, seed) {
+  let h = ((seed * 2246822519) ^ (x * 2654435761) ^ (y * 2246822519)) | 0;
+  h = ((h >>> 16) ^ h) * 0x45d9f3b | 0;
+  h = ((h >>> 16) ^ h) * 0x45d9f3b | 0;
+  h = (h >>> 16) ^ h;
+  return (h >>> 0) / 4294967296;
+}
+function ihash2(x, y, s1, s2) {
+  return [ihash(x, y, s1), ihash(x, y, s2)];
+}
+
+// ─────────────────────────────────────────────────────────────
+// NOISE FUNCTIONS  — all return a float in [0, 1]
+// ─────────────────────────────────────────────────────────────
+function lerp(a, b, t) { return a + (b - a) * t; }
+function smoothstep(t) { return t * t * (3 - 2 * t); }
+
+// White noise
+function noiseWhite(x, y, seed) {
+  return ihash(x, y, seed);
+}
+
+// Value noise — bilinear interpolation of hashed grid corners
+function noiseValue(nx, ny, seed) {
+  const ix = Math.floor(nx), iy = Math.floor(ny);
+  const fx = nx - ix,        fy = ny - iy;
+  const ux = smoothstep(fx), uy = smoothstep(fy);
+  return lerp(
+    lerp(ihash(ix,   iy,   seed), ihash(ix+1, iy,   seed), ux),
+    lerp(ihash(ix,   iy+1, seed), ihash(ix+1, iy+1, seed), ux),
+    uy
+  );
+}
+
+// Perlin noise — classic gradient noise with seeded permutation table
+class PerlinNoise {
+  constructor(seed) {
+    const p = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) p[i] = i;
+    const rng = mulberry32(seed >>> 0);
+    for (let i = 255; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = p[i]; p[i] = p[j]; p[j] = t;
+    }
+    this.perm = new Uint8Array(512);
+    for (let i = 0; i < 512; i++) this.perm[i] = p[i & 255];
+  }
+  grad(h, x, y) {
+    const vecs = [[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+    const [gx, gy] = vecs[h & 7];
+    return gx * x + gy * y;
+  }
+  fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+  sample(nx, ny) {
+    const X = Math.floor(nx) & 255, Y = Math.floor(ny) & 255;
+    const xf = nx - Math.floor(nx), yf = ny - Math.floor(ny);
+    const u = this.fade(xf), v = this.fade(yf);
+    const p = this.perm;
+    const aa = p[p[X  ]+Y], ab = p[p[X  ]+Y+1];
+    const ba = p[p[X+1]+Y], bb = p[p[X+1]+Y+1];
+    return lerp(
+      lerp(this.grad(aa, xf,   yf),   this.grad(ba, xf-1, yf),   u),
+      lerp(this.grad(ab, xf,   yf-1), this.grad(bb, xf-1, yf-1), u),
+      v
+    ) * 0.5 + 0.5;
+  }
+}
+
+// Worley (cellular) noise — F1 distance to nearest random point
+function noiseWorley(nx, ny, seed) {
+  const ix = Math.floor(nx), iy = Math.floor(ny);
+  let minD = 9999;
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const cx = ix + dx, cy = iy + dy;
+      const px = cx + ihash(cx, cy, seed);
+      const py = cy + ihash(cx, cy, seed + 137591);
+      const d = Math.sqrt((nx - px) ** 2 + (ny - py) ** 2);
+      if (d < minD) minD = d;
+    }
+  }
+  return Math.min(minD, 1.0);
+}
+
+// fBm — fractional Brownian motion layered over value noise
+function noiseFbm(nx, ny, octaves, persistence, lacunarity, seed) {
+  let v = 0, amp = 1, freq = 1, total = 0;
+  for (let i = 0; i < octaves; i++) {
+    v     += noiseValue(nx * freq, ny * freq, seed + i * 4999) * amp;
+    total += amp;
+    amp   *= persistence;
+    freq  *= lacunarity;
+  }
+  return v / total;
+}
+
+// ─────────────────────────────────────────────────────────────
+// COLOR MAPS — value [0,1] -> [r,g,b] (0-255)
+// ─────────────────────────────────────────────────────────────
+function hslToRgb(h, s, l) {
+  const k = n => (n + h * 12) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => Math.round((l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))) * 255);
+  return [f(0), f(8), f(4)];
+}
+
+function gradientMap(v, stops) {
+  const t = v * (stops.length - 1);
+  const i = Math.min(Math.floor(t), stops.length - 2);
+  const f = t - i;
+  return stops[i].map((c, k) => Math.round(c + f * (stops[i+1][k] - c)));
+}
+
+const COLOR_MAPS = {
+  grayscale: v => { const c = Math.round(v * 255); return [c, c, c]; },
+  inverted:  v => { const c = Math.round((1 - v) * 255); return [c, c, c]; },
+  plasma:    v => hslToRgb(v, 1.0, 0.5),
+  thermal:   v => gradientMap(v, [
+    [10, 10, 80], [20, 60, 180], [0, 200, 210], [240, 220, 30], [220, 30, 20]
+  ]),
+  viridis:   v => gradientMap(v, [
+    [68,1,84],[59,28,140],[33,102,142],[33,145,140],[56,185,120],[122,207,79],[238,231,32]
+  ]),
+  copper:    v => gradientMap(v, [
+    [0,0,0],[80,50,32],[140,88,56],[200,126,80],[255,160,100]
+  ]),
+  binary:    v => { const c = v >= 0.5 ? 255 : 0; return [c, c, c]; },
+};
+
+// ─────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+
+function getParams() {
+  return {
+    type:        document.getElementById('noiseType').value,
+    scale:       +document.getElementById('scale').value,
+    octaves:     +document.getElementById('octaves').value,
+    persistence: +document.getElementById('persistence').value,
+    lacunarity:  +document.getElementById('lacunarity').value,
+    imgW:        Math.max(64, Math.min(4096, +document.getElementById('imgW').value | 0)),
+    imgH:        Math.max(64, Math.min(4096, +document.getElementById('imgH').value | 0)),
+    pixelSize:   +document.getElementById('pixelSize').value | 0,
+    colorMode:   document.getElementById('colorMode').value,
+    seed:        +document.getElementById('seed').value | 0,
+  };
+}
+
+function render() {
+  const p  = getParams();
+  const t0 = performance.now();
+
+  // Compute noise at reduced resolution, then scale up
+  const nW = Math.ceil(p.imgW / p.pixelSize);
+  const nH = Math.ceil(p.imgH / p.pixelSize);
+  const effectiveScale = p.scale / p.pixelSize;
+
+  const off  = new OffscreenCanvas(nW, nH);
+  const octx = off.getContext('2d');
+  const img  = octx.createImageData(nW, nH);
+  const d    = img.data;
+
+  const colorFn = COLOR_MAPS[p.colorMode] || COLOR_MAPS.grayscale;
+  const perlin  = (p.type === 'perlin') ? new PerlinNoise(p.seed) : null;
+
+  for (let y = 0; y < nH; y++) {
+    for (let x = 0; x < nW; x++) {
+      let v = 0;
+      const nx = x / effectiveScale;
+      const ny = y / effectiveScale;
+      switch (p.type) {
+        case 'white':  v = noiseWhite(x, y, p.seed); break;
+        case 'value':  v = noiseValue(nx, ny, p.seed); break;
+        case 'perlin': v = perlin.sample(nx, ny); break;
+        case 'worley': v = noiseWorley(nx, ny, p.seed); break;
+        case 'fbm':    v = noiseFbm(nx, ny, p.octaves, p.persistence, p.lacunarity, p.seed); break;
+      }
+      v = Math.max(0, Math.min(1, v));
+      const [r, g, b] = colorFn(v);
+      const i = (y * nW + x) * 4;
+      d[i] = r; d[i+1] = g; d[i+2] = b; d[i+3] = 255;
+    }
+  }
+
+  octx.putImageData(img, 0, 0);
+
+  canvas.width  = p.imgW;
+  canvas.height = p.imgH;
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(off, 0, 0, p.imgW, p.imgH);
+
+  const ms = (performance.now() - t0).toFixed(0);
+  document.getElementById('statSize').textContent    = `${p.imgW} x ${p.imgH} px`;
+  document.getElementById('statSamples').textContent = `${(nW * nH).toLocaleString()} samples`;
+  document.getElementById('statTime').textContent    = `${ms} ms`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// DOWNLOAD
+// ─────────────────────────────────────────────────────────────
+document.getElementById('download').addEventListener('click', () => {
+  const p = getParams();
+  canvas.toBlob(blob => {
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = `noise_${p.type}_seed${p.seed}_${p.colorMode}_${p.pixelSize}px_${p.imgW}x${p.imgH}.png`;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+});
+
+// ─────────────────────────────────────────────────────────────
+// CONTROLS WIRING
+// ─────────────────────────────────────────────────────────────
+let debounceTimer = null;
+function scheduleRender(delay = 80) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(render, delay);
+}
+
+function bindSlider(id, displayId, digits) {
+  const el = document.getElementById(id);
+  const dv = document.getElementById(displayId);
+  el.addEventListener('input', () => {
+    dv.textContent = parseFloat(el.value).toFixed(digits);
+    scheduleRender();
+  });
+  dv.textContent = parseFloat(el.value).toFixed(digits);
+}
+
+bindSlider('scale',       'scaleVal',       0);
+bindSlider('pixelSize',   'pixelSizeVal',   0);
+bindSlider('octaves',     'octavesVal',     0);
+bindSlider('persistence', 'persistenceVal', 2);
+bindSlider('lacunarity',  'lacunarityVal',  1);
+
+document.getElementById('noiseType').addEventListener('change', () => {
+  const type    = document.getElementById('noiseType').value;
+  const isFbm   = type === 'fbm';
+  const isWhite = type === 'white';
+  document.getElementById('fbmSection').classList.toggle('hidden', !isFbm);
+  document.getElementById('scaleField').classList.toggle('hidden', isWhite);
+  scheduleRender();
+});
+
+['colorMode', 'imgW', 'imgH', 'seed'].forEach(id =>
+  document.getElementById(id).addEventListener('change', () => scheduleRender())
+);
+
+document.getElementById('randomSeed').addEventListener('click', () => {
+  document.getElementById('seed').value = Math.floor(Math.random() * 99999);
+  scheduleRender(0);
+});
+
+// Init
+document.getElementById('noiseType').dispatchEvent(new Event('change'));
+</script>
+</body>
+</html>
