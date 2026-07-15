@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Random Name Puller</h1>
+        <input type="textArea" id="nameInput" placeholder="Enter names separated by commas">
+        <button id="pullButton">Pull Random Name</button>
+        <div id="result"></div>
+    </div>
+
+</body>
+<script>
+    const container = document.getElementById('container');
+    const nameInput = document.getElementById('nameInput');
+    const pullButton = document.getElementById('pullButton');
+    const result = document.getElementById('result');
+
+    pullButton.addEventListener('click', () => {
+        const names = nameInput.value.split(',');
+        const randomName = names[Math.floor(Math.random() * names.length)];
+
+    result.textContent = randomName;
+});
+
+</script>
+</html>
